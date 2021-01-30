@@ -19,9 +19,10 @@ var data6 = fs.readFileSync('d.txt', 'utf8');
 var data8 = fs.readFileSync('e.txt', 'utf8');
 var data10 = fs.readFileSync('g.txt', 'utf8');
 var data12 = fs.readFileSync('h.txt', 'utf8');
-
+/*
 var data1=JSON.parse(fs.readFileSync('data1.json', 'utf8'));
-const values = data1.array1;
+const values = data1.array1; // add file named data1.json to use "@someone"
+*/
 const WolframAlphaAPI = require('wolfram-alpha-api');
 const puppeteer = require('puppeteer');
 const waApi = WolframAlphaAPI('KEY');
@@ -187,20 +188,18 @@ module.exports = msgHandler = async (client, message) => {
                   console.error(error) 
               }
               }
+              /*
               if (enabled[5] && pres_bud.includes('@someone')) {
                 try {
                   if (!message.fromMe) {msgFilter.addFilter2(message.author)}
-                  /*
-                    client.getAllMessagesInChat(message.chatId).then(async function (alls) {
-                    await client.sendTextWithMentions(message.chatId, "@" + alls[Math.floor(Math.random() * alls.length)].author.substring(0,12), message.id);
-                  })*/
+                  
                   await client.sendTextWithMentions(message.chatId, "@" + values[parseInt(Math.random() * values.length)], message.id);
               } catch (error) {
                   console.error(error) 
               }
               }
             }
-            jmp:
+            */
         // [BETA] Avoid Spam Message
         if (isCmd && msgFilter.isFiltered(from) && !isGroupMsg) { return console.log(color('[SPAM]', 'red'), color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'yellow'), color(`${command} [${args.length}]`), 'from', color(pushname)) }
         if (isCmd && msgFilter.isFiltered(from) && isGroupMsg) { return console.log(color('[SPAM]', 'red'), color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'yellow'), color(`${command} [${args.length}]`), 'from', color(pushname), 'in', color(name || formattedTitle)) }
