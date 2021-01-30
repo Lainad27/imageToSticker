@@ -28,6 +28,7 @@ const MediaGiphy = (url) => {
 
 // Message Filter / Message Cooldowns
 const usedCommandRecently = new Set()
+const usedCommandRecently2 = new Set()
 
 const isFiltered = (from) => {
     return !!usedCommandRecently.has(from)
@@ -37,7 +38,18 @@ const addFilter = (from) => {
     usedCommandRecently.add(from)
     setTimeout(() => {
         return usedCommandRecently.delete(from)
-    }, 5000) // 5sec is delay before processing next command
+    }, 10000) // 5sec is delay before processing next command
+}
+
+const isFiltered2 = (from) => {
+    return !!usedCommandRecently2.has(from)
+}
+
+const addFilter2 = (from) => {
+    usedCommandRecently2.add(from)
+    setTimeout(() => {
+        return usedCommandRecently2.delete(from)
+    }, 60000) // 5sec is delay before processing next command
 }
 
 // Message type Log
@@ -49,7 +61,9 @@ const messageLog = (fromMe, type) => updateJson('utils/stat.json', (data) => {
 module.exports = {
     msgFilter: {
         isFiltered,
-        addFilter
+        addFilter,
+        isFiltered2,
+        addFilter2
     },
     processTime,
     is: {
