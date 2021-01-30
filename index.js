@@ -7,7 +7,6 @@ const start = (client = new Client()) => {
     console.log('[CLIENT] CLIENT Started!')
 
     // Message log for analytic
-    client.onAnyMessage((fn) => messageLog(fn.fromMe, fn.type))
 
     // Force it to keep the current session
     client.onStateChanged((state) => {
@@ -16,7 +15,7 @@ const start = (client = new Client()) => {
     })
 
     // listening on message
-    client.onMessage((message) => {
+    client.onAnyMessage((message) => {
         // Cut message Cache if cache more than 3K
         client.getAmountOfLoadedMessages().then((msg) => (msg >= 3000) && client.cutMsgCache())
         // Message Handler
@@ -24,6 +23,7 @@ const start = (client = new Client()) => {
     })
 
     // listen group invitation
+    /*
     client.onAddedToGroup(({ groupMetadata: { id }, contact: { name } }) =>
         client.getGroupMembersId(id)
             .then((ids) => {
@@ -35,7 +35,7 @@ const start = (client = new Client()) => {
                     client.sendText(id, `Hello group members *${name}*, thank you for inviting this bot, to see the bot menu send *#menu*`)
                 }
             }))
-
+*/
     // listen paricipant event on group (wellcome message)
     client.onGlobalParicipantsChanged(async (event) => {
         // const host = await client.getHostNumber() + '@c.us'
@@ -49,14 +49,17 @@ const start = (client = new Client()) => {
 
 const options = {
     sessionId: 'Imperial',
-    headless: true,
+    headless: false,
     qrTimeout: 0,
     authTimeout: 0,
     restartOnCrash: start,
     cacheEnabled: false,
+    blockCrashLogs: true,
+    deleteSessionDataOnLogout: true,
     useChrome: true,
     killProcessOnBrowserClose: true,
     throwErrorOnTosBlock: false,
+    viewport: { height: 1000, width: 1920 },
     chromiumArgs: [
         '--no-sandbox',
         '--disable-setuid-sandbox',
