@@ -24,8 +24,6 @@
 |       ✅       | Reply A Photo                    |
 |       ✅       | Image Url                        |
 |       ✅       | Animated sticker using giphy url |
-|       https://bit.ly/3hmgD4R       | sticker with no background       |
-|       https://bit.ly/3hmgD4R       | sticker meme      |
 
 
 | Downloader |                     Feature                |
@@ -51,13 +49,7 @@
 |       ✅        |   Demote User                   |
 |       ✅        |   Kick User                     |
 |       ✅        |   Delete bot message            |
-|       https://bit.ly/3hmgD4R        |   Mention All User      |
 
-## To-Do
- - Add More Feature
- - More refactoring
- 
----
 
 ## Getting Started
 
@@ -83,6 +75,8 @@ Install the dependencies:
 ```bash
 > npm start
 ```
+
+Also, to use the Wolfram alpha API go to https://developer.wolframalpha.com/portal/myapps/ and fill the api key (searck KEY) in \handler\message\index.js .
 
 after running it you need to scan the qr
 
