@@ -11,7 +11,7 @@
 | Sticker Creator |                Feature           |
 | :-----------: | :--------------------------------: |
 |       ✅       | Send Image of Message as Sticker |
-|       ✅       | Sticker Meme Make                |
+|       ✅       | Sticker Meme Maker               |
 |       ✅       | Animated sticker Meme Maker      |
 
 | Other         |                Feature           |
