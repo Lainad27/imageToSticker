@@ -46,6 +46,7 @@ const { FONT_SANS_64_WHITE } = require('jimp')
 const { stream } = require('file-type')
 const { FONT_SANS_64_BLACK } = require('jimp')
 const { umask, stdout } = require('process')
+var ValidColors = ['aliceblue', 'antiquewhite', 'aqua', 'aquamarine', 'azure', 'beige', 'bisque', 'black', 'blanchedalmond', 'blue', 'blueviolet', 'brown', 'burlywood', 'cadetblue', 'chartreuse', 'chocolate', 'coral', 'cornflowerblue', 'cornsilk', 'crimson', 'cyan', 'darkblue', 'darkcyan', 'darkgoldenrod', 'darkgray', 'darkgrey', 'darkgreen', 'darkkhaki', 'darkmagenta', 'darkolivegreen', 'darkorange', 'darkorchid', 'darkred', 'darksalmon', 'darkseagreen', 'darkslateblue', 'darkslategray', 'darkslategrey', 'darkturquoise', 'darkviolet', 'deeppink', 'deepskyblue', 'dimgray', 'dimgrey', 'dodgerblue', 'firebrick', 'floralwhite', 'forestgreen', 'fuchsia', 'gainsboro', 'ghostwhite', 'gold', 'goldenrod', 'gray', 'grey', 'green', 'greenyellow', 'honeydew', 'hotpink', 'indianred', 'indigo', 'ivory', 'khaki', 'lavender', 'lavenderblush', 'lawngreen', 'lemonchiffon', 'lightblue', 'lightcoral', 'lightcyan', 'lightgoldenrodyellow', 'lightgray', 'lightgrey', 'lightgreen', 'lightpink', 'lightsalmon', 'lightseagreen', 'lightskyblue', 'lightslategray', 'lightslategrey', 'lightsteelblue', 'lightyellow', 'lime', 'limegreen', 'linen', 'magenta', 'maroon', 'mediumaquamarine', 'mediumblue', 'mediumorchid', 'mediumpurple', 'mediumseagreen', 'mediumslateblue', 'mediumspringgreen', 'mediumturquoise', 'mediumvioletred', 'midnightblue', 'mintcream', 'mistyrose', 'moccasin', 'navajowhite', 'navy', 'oldlace', 'olive', 'olivedrab', 'orange', 'orangered', 'orchid', 'palegoldenrod', 'palegreen', 'paleturquoise', 'palevioletred', 'papayawhip', 'peachpuff', 'peru', 'pink', 'plum', 'powderblue', 'purple', 'rebeccapurple', 'red', 'rosybrown', 'royalblue', 'saddlebrown', 'salmon', 'sandybrown', 'seagreen', 'seashell', 'sienna', 'silver', 'skyblue', 'slateblue', 'slategray', 'slategrey', 'snow', 'springgreen', 'steelblue', 'tan', 'teal', 'thistle', 'tomato', 'turquoise', 'violet', 'wheat', 'white', 'whitesmoke', 'yellow', 'yellowgreen']
 
 function draw(img, ctx) {
     var buffer = createCanvas(512, 512)
@@ -166,7 +167,7 @@ module.exports = msgHandler = async (client, message) => {
         if (isCmd && !isGroupMsg) { console.log(color('[EXEC]'), color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'yellow'), color(`${command} [${args.length}]`), 'from', color(pushname)) }
         if (isCmd && isGroupMsg) { console.log(color('[EXEC]'), color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'yellow'), color(`${command} [${args.length}]`), 'from', color(pushname), 'in', color(name || formattedTitle)) }
         // [BETA] Avoid Spam Message
-        msgFilter.addFilter(from)
+        msgFilter.addFilter(message.author)
 
         switch (command) {
             // Menu and TnC
@@ -179,8 +180,9 @@ module.exports = msgHandler = async (client, message) => {
                 break
             case 'menu':
             case 'help':
+            case 'commands':
                 if (arg == '#help ' || arg == '#help') {
-                    await client.reply(from, 'Hello. This is a bot that does cool things for Whatsapp.\n Avialable commands: ping,help,sticker,fakesticker,contactsticker,botstat,wolf,mj,black,toggle,compile.\n send "#help [command]" for command info', id);
+                    await client.reply(from, 'Hello. This is a bot that does cool things for Whatsapp.\n Avialable commands: ping, help, sticker, fakesticker, contactsticker, botstat, wolf, mj, black, toggle, compile, fps.\n send "#help [command]" for command info', id);
                 }
                 else {
                     switch (arg) {
@@ -190,6 +192,7 @@ module.exports = msgHandler = async (client, message) => {
                             break
                         case 'menu':
                         case 'help':
+                        case 'commands':
                             client.reply(from, 'list commands, or #help [command] to get info about command. aliases: help,menu.', id)
                             break
                         case 'sticker':
@@ -198,7 +201,7 @@ module.exports = msgHandler = async (client, message) => {
                         case 'sticker2':
                         case 's2':
                         case 'stiker2':
-                            client.reply(from, 'reply to image or send image with: #s [color] [outline] expand[if you want to expand] top text, bottom text. aliases: sticker,s,stiker,sticker2,stiker,s2.', id)
+                            client.reply(from, 'reply to image or send image with: #s [color] [outline] expand[if you want to expand] top text|bottom text. aliases: sticker,s,stiker,sticker2,stiker,s2.', id)
                             break
                         case 'fakesticker':
                         case 'fs':
@@ -223,7 +226,10 @@ module.exports = msgHandler = async (client, message) => {
                             case 'compile':
                                 client.reply(from, 'compile and run code with #compile [lang] [code]. available langs: ```"bash": "bash", "c": "gcc-head-c","c#": "dotnetcore-head", "coffeescript": "coffeescript-head", "cpp": "gcc-head", "elixir": "elixir-head", "go": "go-head", "java": "openjdk-head", "javascript": "nodejs-head", "lua": "lua-5.3.4", "perl": "perl-head", "php": "php-head", "python": "cpython-3.8.0", "ruby": "ruby-head", "rust": "rust-head", "sql": "sqlite-head", "swift": "swift-5.0.1", "typescript": "typescript-3.5.1", "vim-script": "vim-head", ``` .aliases: compile.', id)
                                 break
-                        default:
+                            case 'fps':
+                                client.reply(from, 'reply to a video or send video with: #fps [color] [shadow] expand[if you want to expand] top text|bottom text. aliases: fps.', id)
+                                break
+                            default:
                             client.reply(from, 'thats not a command.', id)
                     }
                 }
@@ -288,89 +294,131 @@ module.exports = msgHandler = async (client, message) => {
             }
             */
            case 'fps': {
-            if (isMedia && (mimetype === 'video/mp4' && message.duration < 30 || mimetype === 'image/gif' && message.duration < 30)) {
-                const mediaData = await decryptMedia(message, uaOverride)
+            if (((isMedia && (mimetype === 'video/mp4' && message.duration < 30 || mimetype === 'image/gif' && message.duration < 30)) || !isQuotedImage && (quotedMsg != null) && (quotedMsgObj.mimetype === 'video/mp4' && quotedMsgObj.duration < 30 || quotedMsgObj.mimetype === 'image/gif' && quotedMsgObj.duration < 30)) && args.length<2) {
+                const encryptMedia = (quotedMsg != null) ? quotedMsg : message
+                const mediaData = await decryptMedia(encryptMedia, uaOverride)
                 client.reply(from, 'this will take a while to process.', id)
-                const filename = `./media/input.${mimetype.split('/')[1]}`
-                if (args[0] == 'expand') {
-                    fs.writeFileSync(filename, mediaData)
-                    ffmpeg(filename).size('240x?').aspect('1:1').autopad().fps(30).output('./media/output.webp').on('end', function () {
-                        var stats = fs.statSync("./media/output.webp")
-                        var fileSizeInBytes = stats.size;
-                        if (fileSizeInBytes < 900000) {
+                const filename = `./media/input.${encryptMedia.mimetype.split('/')[1]}`
+                fs.writeFileSync(filename, mediaData)
+                var command1 = ffmpeg(filename).fps(30).size('240x?').aspect('1:1');
+                if (args[0] != 'expand') {command1.autopad()}
+                command1.output('./media/output.webp').on('end', function () {
+                    var stats = fs.statSync("./media/output.webp")
+                    var fileSizeInBytes = stats.size;
+                    if (fileSizeInBytes < 900000) {
+                    const gif = fs.readFileSync('./media/output.webp', { encoding: "base64" })
+                        client.sendImageAsSticker(message.chatId, `data:image/gif;base64,${gif}`, {author: undefined, pack: "reply to video/gif with #fps"})
+                    }
+                    else {
+                        var command2 = ffmpeg(filename).size(`240x?`).fps(`${Math.floor(30*(900000/fileSizeInBytes))-1}`).aspect('1:1');
+                        if (args[0] != 'expand') {command2.autopad()}
+                        command2.output('./media/output.webp').on('end', function () {
                             const gif = fs.readFileSync('./media/output.webp', { encoding: "base64" })
-                            client.sendImageAsSticker(message.chatId, `data:image/gif;base64,${gif}`)
-                        }
-                        else {
-                            ffmpeg(filename).size(`240x?`).fps(`${Math.floor(30*(900000/fileSizeInBytes))-1}`).aspect('1:1').output('./media/output.webp').on('end', function () {
-                                const gif = fs.readFileSync('./media/output.webp', { encoding: "base64" })
-                                client.sendImageAsSticker(message.chatId, `data:image/gif;base64,${gif}`)
-                            }).run()
-                        }
-                    }).run()
-                }
-                else {
-                    fs.writeFileSync(filename, mediaData)
-                    ffmpeg(filename).fps(30).size('240x?').aspect('1:1').autopad().output('./media/output.webp').on('end', function () {
-                        var stats = fs.statSync("./media/output.webp")
-                        var fileSizeInBytes = stats.size;
-                        if (fileSizeInBytes < 900000) {
-                            const gif = fs.readFileSync('./media/output.webp', { encoding: "base64" })
-                            client.sendImageAsSticker(message.chatId, `data:image/gif;base64,${gif}`)
-                        }
-                        else {
-                            ffmpeg(filename).size(`240x?`).fps(`${Math.floor(30*(900000/fileSizeInBytes))-1}`).aspect('1:1').autopad().output('./media/output.webp').on('end', function () {
-                                const gif = fs.readFileSync('./media/output.webp', { encoding: "base64" })
-                                client.sendImageAsSticker(message.chatId, `data:image/gif;base64,${gif}`)
-                            }).run()
-                        }
-                    }).run()
-                }
+                            client.sendImageAsSticker(message.chatId, `data:image/gif;base64,${gif}`, {author: undefined, pack: "reply to video/gif with #fps"})
+                        }).run()
+                    }
+                }).run()
             }
-            else if (!isQuotedImage && (quotedMsg != null) && (quotedMsgObj.mimetype === 'video/mp4' && quotedMsgObj.duration < 30 || quotedMsgObj.mimetype === 'image/gif' && quotedMsgObj.duration < 30)) {
-                const mediaData = await decryptMedia(quotedMsg, uaOverride)
+            else if (((isMedia && (mimetype === 'video/mp4' && message.duration < 30 || mimetype === 'image/gif' && message.duration < 30)) || !isQuotedImage && (quotedMsg != null) && (quotedMsgObj.mimetype === 'video/mp4' && quotedMsgObj.duration < 30 || quotedMsgObj.mimetype === 'image/gif' && quotedMsgObj.duration < 30)) && args.length>1) {
+                const encryptMedia = (quotedMsg != null) ? quotedMsg : message
+                const mediaData = await decryptMedia(encryptMedia, uaOverride)
                 client.reply(from, 'this will take a while to process.', id)
-                const filename = `./media/input.${quotedMsgObj.mimetype.split('/')[1]}`
-                var height = quotedMsgObj.height
-                var width = quotedMsgObj.width
-                var max = Math.max(height,width)
-                var min = Math.min(height,width)
-                console.log(min)
-                console.log(max)
-                if (args[0] == 'expand') {
-                    fs.writeFileSync(filename, mediaData)
-                    ffmpeg(filename).fps(30).size('240x?').aspect('1:1').autopad().output('./media/output.webp').on('end', function () {
-                        var stats = fs.statSync("./media/output.webp")
-                        var fileSizeInBytes = stats.size;
-                        if (fileSizeInBytes < 900000) {
-                            const gif = fs.readFileSync('./media/output.webp', { encoding: "base64" })
-                            client.sendImageAsSticker(message.chatId, `data:image/gif;base64,${gif}`)
+                const filename = `./media/input.${encryptMedia.mimetype.split('/')[1]}`
+                fs.writeFileSync(filename, mediaData)
+                var command1 = ffmpeg(filename).fps(30).size('240x?').aspect('1:1');
+                if (args[2].toLowerCase() != 'expand') {command1.autopad()}
+                command1.output('./media/output.mp4').on('end', function () {
+                    var command2 = ffmpeg('./media/output.mp4').size('240x?').aspect('1:1').fps(30);;
+                    if (args[2].toLowerCase() == 'expand') {
+                        var meme = arg.split('expand').slice(1).join(' ')
+                        if (!meme.includes('|')) { top = meme }
+                        else { var top = meme.split('|')[0]; var bottom = meme.split('|').slice(1).join(' ') }
+                    }
+                    else {
+                        var meme = args.slice(2).join(' ')
+                        if (!meme.includes('|')) { top = meme }
+                        else { var top = meme.split('|')[0]; var bottom = meme.split('|').slice(1).join(' ') }
+
+                    }
+                    // break used here:
+                    if (!ValidColors.includes(args[0].toLowerCase()) || !ValidColors.includes(args[1].toLowerCase())){return client.reply(from, 'one of the colors you entered is not valid.  valid input: reply to image or send image with: #' + command + ' [color] [shadow] expand[if you want to expand] top text|bottom text.', id);}
+                    var canvas = createCanvas(240, 240)
+                    var ctx = canvas.getContext('2d')
+                    ctx.font = '32px "Secular"'
+                    ctx.fillStyle = args[0];
+                    ctx.strokeStyle = args[1];
+                    ctx.lineWidth = 5;
+                    if (top != undefined) {
+                        top = top.split("").reverse().join("");
+                        words = top.split(' ')
+                        top2 = ''
+                        var i = 0
+                        while (i != words.length) {
+                            if (ctx.measureText(words.slice(0, i + 1).join(' ')).width > 228) {
+                                if (i == 0) {
+                                    top2 += words.slice(0, 1).join(' ') + '\n'
+                                    words = words.slice(i + 1)
+                                }
+                                else {
+                                    top2 += words.slice(0, i).join(' ') + '\n'
+                                    words = words.slice(i)
+                                }
+                                i = -1
+                            }
+                            i++
                         }
-                        else {
-                            ffmpeg(filename).size(`240x?`).fps(`${Math.floor(30*(900000/fileSizeInBytes))-1}`).aspect('1:1').output('./media/output.webp').on('end', function () {
-                                const gif = fs.readFileSync('./media/output.webp', { encoding: "base64" })
-                                client.sendImageAsSticker(message.chatId, `data:image/gif;base64,${gif}`)
-                            }).run()
+                        top2 += words.join(' ')
+                        if (top2 != '' && !top.includes('\n')) { top = top2 }
+                        for (i = 0; i < top.split('\n').length; i++) {
+                            command2.videoFilters({ filter: 'drawtext', options: { fontfile:'SecularOne-Regular.ttf', text: top.split('\n')[i], fontsize: 32, fontcolor: args[0], x: 120-(ctx.measureText(top.split('\n')[i]).width / 2), y: (top.split('\n').length * 32 - 20 * (i)-32), shadowcolor: args[1].toLowerCase(), shadowx: 2, shadowy: 2 } })
                         }
+                    }
+                    if (bottom != undefined) {
+                        bottom = bottom.split("").reverse().join("");
+                        words = bottom.split(' ')
+                        bottom2 = ''
+                        var i = 0
+                        while (i != words.length) {
+                            if (ctx.measureText(words.slice(0, i + 1).join(' ')).width > 228) {
+                                if (i == 0) {
+                                    bottom2 += words.slice(0, 1).join(' ') + '\n'
+                                    words = words.slice(i + 1)
+                                }
+                                else {
+                                    bottom2 += words.slice(0, i).join(' ') + '\n'
+                                    words = words.slice(i)
+                                }
+                                i = -1
+                            }
+                            i++
+                        }
+                        bottom2 += words.join(' ')
+                        if (bottom2 != '' && !bottom.includes('\n')) { bottom = bottom2 }
+                        for (i = 0; i < bottom.split('\n').length; i++) {
+                            command2.videoFilters({ filter: 'drawtext', options: { fontfile:'SecularOne-Regular.ttf', text: bottom.split('\n')[i], fontsize: 32, fontcolor: args[0], x: 120-(ctx.measureText(bottom.split('\n')[i]).width / 2), y: (200 - 20 * (i)), shadowcolor: args[1].toLowerCase(), shadowx: 2, shadowy: 2 } })
+
+                        }
+                    }
+                    command2.output('./media/output2.mp4').on('end', function () {
+                        ffmpeg('./media/output2.mp4').output('./media/output2.webp').on('end', function () {
+                            var stats = fs.statSync('./media/output2.webp')
+                            var fileSizeInBytes2 = stats.size;
+                            if (fileSizeInBytes2 < 900000) {
+                                const gif = fs.readFileSync('./media/output2.webp', { encoding: "base64" })
+                                client.sendImageAsSticker(message.chatId, `data:image/gif;base64,${gif}`, {author: undefined, pack: "reply to video/gif with #s"})
+                            }
+                            else {
+                                ffmpeg('./media/output2.mp4').fps(`${Math.floor(30*(900000/fileSizeInBytes2))-1}`).output('./media/output3.webp').on('end', function () {
+                                    const gif = fs.readFileSync('./media/output3.webp', { encoding: "base64" })
+                                    client.sendImageAsSticker(message.chatId, `data:image/gif;base64,${gif}`, {author: undefined, pack: "reply to video/gif with #s"})
+                                }).run()
+                            }
+                        }).run()
                     }).run()
-                }
-                else {
-                    fs.writeFileSync(filename, mediaData)
-                    ffmpeg(filename).fps(30).size('240x?').aspect('1:1').autopad().output('./media/output.webp').on('end', function () {
-                        var stats = fs.statSync("./media/output.webp")
-                        var fileSizeInBytes = stats.size;
-                        if (fileSizeInBytes < 900000) {
-                            const gif = fs.readFileSync('./media/output.webp', { encoding: "base64" })
-                            client.sendImageAsSticker(message.chatId, `data:image/gif;base64,${gif}`)
-                        }
-                        else {
-                            ffmpeg(filename).size(`240x?`).fps(`${Math.floor(30*(900000/fileSizeInBytes))-1}`).aspect('1:1').autopad().output('./media/output.webp').on('end', function () {
-                                const gif = fs.readFileSync('./media/output.webp', { encoding: "base64" })
-                                client.sendImageAsSticker(message.chatId, `data:image/gif;base64,${gif}`)
-                            }).run()
-                        }
-                    }).run()
-                }
+                }).run()
+            }
+            else {
+                await client.reply(from, 'Wrong Format. valid input: reply to image or send image with: #' + command + ' [color] [shadow] expand[if you want to expand] top text|bottom text.', id)
             }
                 break
             }
@@ -397,7 +445,7 @@ module.exports = msgHandler = async (client, message) => {
                             var fileSizeInBytes = stats.size;
                             if (fileSizeInBytes < 900000) {
                                 const gif = fs.readFileSync('./media/output.webp', { encoding: "base64" })
-                                client.sendImageAsSticker(message.chatId, `data:image/gif;base64,${gif}`)
+                                client.sendImageAsSticker(message.chatId, `data:image/gif;base64,${gif}`, {author: undefined, pack: "reply to video/gif with #s"})
                             }
                             else {
                                 console.log(Math.floor(240 * Math.sqrt(680000 / fileSizeInBytes)))
@@ -405,7 +453,7 @@ module.exports = msgHandler = async (client, message) => {
                                 console.log(Math.floor(240 * (1000000 / fileSizeInBytes)))
                                 ffmpeg(filename).size(`${Math.floor(240 * (900000 / fileSizeInBytes))}x?`).aspect('1:1').output('./media/output.webp').on('end', function () {
                                     const gif = fs.readFileSync('./media/output.webp', { encoding: "base64" })
-                                    client.sendImageAsSticker(message.chatId, `data:image/gif;base64,${gif}`)
+                                    client.sendImageAsSticker(message.chatId, `data:image/gif;base64,${gif}`, {author: undefined, pack: "reply to video/gif with #s"})
                                 }).run()
                             }
                         }).run()
@@ -417,7 +465,7 @@ module.exports = msgHandler = async (client, message) => {
                             var fileSizeInBytes = stats.size;
                             if (fileSizeInBytes < 900000) {
                                 const gif = fs.readFileSync('./media/output.webp', { encoding: "base64" })
-                                client.sendImageAsSticker(message.chatId, `data:image/gif;base64,${gif}`)
+                                client.sendImageAsSticker(message.chatId, `data:image/gif;base64,${gif}`, {author: undefined, pack: "reply to video/gif with #s"})
                             }
                             else {
                                 console.log(Math.floor(240 * Math.sqrt(680000 / fileSizeInBytes)))
@@ -425,7 +473,7 @@ module.exports = msgHandler = async (client, message) => {
                                 console.log(Math.floor(240 * (1000000 / fileSizeInBytes)))
                                 ffmpeg(filename).size(`${Math.floor(240  *Math.sqrt(900000*min / fileSizeInBytes/max))}x?`).aspect('1:1').autopad().output('./media/output.webp').on('end', function () {
                                     const gif = fs.readFileSync('./media/output.webp', { encoding: "base64" })
-                                    client.sendImageAsSticker(message.chatId, `data:image/gif;base64,${gif}`)
+                                    client.sendImageAsSticker(message.chatId, `data:image/gif;base64,${gif}`, {author: undefined, pack: "reply to video/gif with #s"})
                                 }).run()
                             }
                         }).run()
@@ -448,7 +496,7 @@ module.exports = msgHandler = async (client, message) => {
                             var fileSizeInBytes = stats.size;
                             if (fileSizeInBytes < 900000) {
                                 const gif = fs.readFileSync('./media/output.webp', { encoding: "base64" })
-                                client.sendImageAsSticker(message.chatId, `data:image/gif;base64,${gif}`)
+                                client.sendImageAsSticker(message.chatId, `data:image/gif;base64,${gif}`, {author: undefined, pack: "reply to video/gif with #s"})
                             }
                             else {
                                 console.log(Math.floor(240 * Math.sqrt(680000 / fileSizeInBytes)))
@@ -456,7 +504,7 @@ module.exports = msgHandler = async (client, message) => {
                                 console.log(Math.floor(240 * (1000000 / fileSizeInBytes)))
                                 ffmpeg(filename).size(`${Math.floor(240 * (900000 / fileSizeInBytes))}x?`).aspect('1:1').output('./media/output.webp').on('end', function () {
                                     const gif = fs.readFileSync('./media/output.webp', { encoding: "base64" })
-                                    client.sendImageAsSticker(message.chatId, `data:image/gif;base64,${gif}`)
+                                    client.sendImageAsSticker(message.chatId, `data:image/gif;base64,${gif}`, {author: undefined, pack: "reply to video/gif with #s"})
                                 }).run()
                             }
                         }).run()
@@ -468,7 +516,7 @@ module.exports = msgHandler = async (client, message) => {
                             var fileSizeInBytes = stats.size;
                             if (fileSizeInBytes < 900000) {
                                 const gif = fs.readFileSync('./media/output.webp', { encoding: "base64" })
-                                client.sendImageAsSticker(message.chatId, `data:image/gif;base64,${gif}`)
+                                client.sendImageAsSticker(message.chatId, `data:image/gif;base64,${gif}`, {author: undefined, pack: "reply to video/gif with #s"})
                             }
                             else {
                                 console.log(Math.floor(240 * Math.sqrt(680000 / fileSizeInBytes)))
@@ -476,7 +524,7 @@ module.exports = msgHandler = async (client, message) => {
                                 console.log(Math.floor(240 * (1000000 / fileSizeInBytes)))
                                 ffmpeg(filename).size(`${Math.floor(240  *Math.sqrt(900000*min / fileSizeInBytes/max))}x?`).aspect('1:1').autopad().output('./media/output.webp').on('end', function () {
                                     const gif = fs.readFileSync('./media/output.webp', { encoding: "base64" })
-                                    client.sendImageAsSticker(message.chatId, `data:image/gif;base64,${gif}`)
+                                    client.sendImageAsSticker(message.chatId, `data:image/gif;base64,${gif}`, {author: undefined, pack: "reply to video/gif with #s"})
                                 }).run()
                             }
                         }).run()
@@ -494,8 +542,8 @@ module.exports = msgHandler = async (client, message) => {
                             var ctx = canvas.getContext('2d')
                             ctx.drawImage(image, 0, 0, image.width, image.height, 0, 0, 512, 512)
                             var meme = arg.split('expand').slice(1).join(' ')
-                            if (!meme.includes(',')) { top = meme }
-                            else { var top = meme.split(',')[0]; var bottom = meme.split(',').slice(1).join(' ') }
+                            if (!meme.includes('|')) { top = meme }
+                            else { var top = meme.split('|')[0]; var bottom = meme.split('|').slice(1).join(' ') }
                         }
                         else {
                             var canvas = createCanvas(512, 512)
@@ -507,8 +555,8 @@ module.exports = msgHandler = async (client, message) => {
                                 ctx.drawImage(image, 0, 0, image.width, image.height, 0, 256 - 256 * image.height / image.width, 512, 512 * image.height / image.width)
                             }
                             var meme = args.slice(2).join(' ')
-                            if (!meme.includes(',')) { top = meme }
-                            else { var top = meme.split(',')[0]; var bottom = meme.split(',').slice(1).join(' ') }
+                            if (!meme.includes('|')) { top = meme }
+                            else { var top = meme.split('|')[0]; var bottom = meme.split('|').slice(1).join(' ') }
 
                         }
                         ctx.font = '64px "Secular"'
@@ -520,7 +568,7 @@ module.exports = msgHandler = async (client, message) => {
                             top2 = ''
                             var i = 0
                             while (i != words.length) {
-                                if (ctx.measureText(words.slice(0, i + 1).join(' ')).width > 450) {
+                                if (ctx.measureText(words.slice(0, i + 1).join(' ')).width > 500) {
                                     if (i == 0) {
                                         top2 += words.slice(0, 1).join(' ') + '\n'
                                         words = words.slice(i + 1)
@@ -536,8 +584,8 @@ module.exports = msgHandler = async (client, message) => {
                             top2 += words.join(' ')
                             if (top2 != '' && !top.includes('\n')) { top = top2 }
                             for (i = 0; i < top.split('\n').length; i++) {
-                                ctx.strokeText(top.split('\n')[i], canvas.width / 2 - (ctx.measureText(top.split('\n')[i]).width / 2), 40 + 48 * (i));
-                                ctx.fillText(top.split('\n')[i], canvas.width / 2 - (ctx.measureText(top.split('\n')[i]).width / 2), 40 + 48 * (i));
+                                ctx.strokeText(top.split('\n')[i], canvas.width / 2 - (ctx.measureText(top.split('\n')[i]).width / 2), 64 + 64 * (i));
+                                ctx.fillText(top.split('\n')[i], canvas.width / 2 - (ctx.measureText(top.split('\n')[i]).width / 2), 64 + 64 * (i));
                             }
                         }
                         if (bottom != undefined) {
@@ -561,24 +609,24 @@ module.exports = msgHandler = async (client, message) => {
                             bottom2 += words.join(' ')
                             if (bottom2 != '' && !bottom.includes('\n')) { bottom = bottom2 }
                             for (i = 0; i < bottom.split('\n').length; i++) {
-                                ctx.strokeText(bottom.split('\n')[i], canvas.width / 2 - (ctx.measureText(bottom.split('\n')[i]).width / 2), 500 - 48 * (bottom.split('\n').length - i - 1));
-                                ctx.fillText(bottom.split('\n')[i], canvas.width / 2 - (ctx.measureText(bottom.split('\n')[i]).width / 2), 500 - 48 * (bottom.split('\n').length - i - 1));
+                                ctx.strokeText(bottom.split('\n')[i], canvas.width / 2 - (ctx.measureText(bottom.split('\n')[i]).width / 2), 480 - 64 * (bottom.split('\n').length - i - 1));
+                                ctx.fillText(bottom.split('\n')[i], canvas.width / 2 - (ctx.measureText(bottom.split('\n')[i]).width / 2), 480 - 64 * (bottom.split('\n').length - i - 1));
                             }
                         }
                         ctx.fill();
                         ctx.stroke();
-                        client.sendImageAsSticker(message.chatId, canvas.toDataURL())
+                        client.sendImageAsSticker(message.chatId, canvas.toDataURL(), {author: undefined, pack: "reply to an image with #s"})
                     })
                 }
                 else if ((isMedia || isQuotedImage) && args.length === 1) {
-                    if (arg != 'expand') { await client.reply(from, 'Wrong Format. valid input: reply to image or send image with: #' + command + ' [color] [outline] expand[if you want to expand] top text, bottom text', id); }
+                    if (arg != 'expand') { await client.reply(from, 'Wrong Format. valid input: reply to image or send image with: #' + command + ' [color] [outline] expand[if you want to expand] top text|bottom text', id); }
                     const encryptMedia = isQuotedImage ? quotedMsg : message
                     const mediaData = await decryptMedia(encryptMedia, uaOverride)
                     loadImage(mediaData).then((image) => {
                         var canvas = createCanvas(512, 512)
                         var ctx = canvas.getContext('2d')
                         ctx.drawImage(image, 0, 0, image.width, image.height, 0, 0, 512, 512)
-                        client.sendImageAsSticker(message.chatId, canvas.toDataURL())
+                        client.sendImageAsSticker(message.chatId, canvas.toDataURL(), {author: undefined, pack: "reply to an image with #s"})
                     })
                 }
                 else if ((isMedia || isQuotedImage) && args.length === 0) {
@@ -594,14 +642,108 @@ module.exports = msgHandler = async (client, message) => {
                         else {
                             ctx.drawImage(image, 0, 0, image.width, image.height, 0, 256 - 256 * image.height / image.width, 512, 512 * image.height / image.width)
                         }
-                        client.sendImageAsSticker(message.chatId, canvas.toDataURL())
+                        client.sendImageAsSticker(message.chatId, canvas.toDataURL(), {author: undefined, pack: "reply to an image with #s"})
                     })
                 }
                 else {
-                    await client.reply(from, 'Wrong Format. valid input: reply to image or send image with: #' + command + ' [color] [outline] expand[if you want to expand] top text, bottom text. Or, reply to video or gif with #' + command + ' expand[if you want to expand]', id)
+                    await client.reply(from, 'Wrong Format. valid input: reply to image or send image with: #' + command + ' [color] [outline] expand[if you want to expand] top text|bottom text. Or, reply to video or gif with #' + command + ' expand[if you want to expand]', id)
                 }
                 break
             }
+            case 'sfont':
+                if ((isMedia || isQuotedImage) && args.length > 2 && parseInt(args[2])<129&& parseInt(args[2])>0) {
+                    const encryptMedia = isQuotedImage ? quotedMsg : message
+                    const _mimetype = isQuotedImage ? quotedMsg.mimetype : mimetype
+                    const mediaData = await decryptMedia(encryptMedia, uaOverride)
+                    const imageBase64 = `data:${_mimetype};base64,${mediaData.toString('base64')}`
+                    var fontSize = parseInt(args[2])
+                    loadImage(mediaData).then((image) => {
+
+                        if (args[3].toLowerCase() == 'expand') {
+                            var canvas = createCanvas(512, 512)
+                            var ctx = canvas.getContext('2d')
+                            ctx.drawImage(image, 0, 0, image.width, image.height, 0, 0, 512, 512)
+                            var meme = arg.split('expand').slice(1).join(' ')
+                            if (!meme.includes('|')) { top = meme }
+                            else { var top = meme.split('|')[0]; var bottom = meme.split('|').slice(1).join(' ') }
+                        }
+                        else {
+                            var canvas = createCanvas(512, 512)
+                            var ctx = canvas.getContext('2d')
+                            if (image.height > image.width) {
+                                ctx.drawImage(image, 0, 0, image.width, image.height, 256 - 256 * image.width / image.height, 0, 512 * image.width / image.height, 512)
+                            }
+                            else {
+                                ctx.drawImage(image, 0, 0, image.width, image.height, 0, 256 - 256 * image.height / image.width, 512, 512 * image.height / image.width)
+                            }
+                            var meme = args.slice(3).join(' ')
+                            if (!meme.includes('|')) { top = meme }
+                            else { var top = meme.split('|')[0]; var bottom = meme.split('|').slice(1).join(' ') }
+
+                        }
+                        ctx.font = `${fontSize}px "Secular"`
+                        ctx.fillStyle = args[0];
+                        ctx.strokeStyle = args[1];
+                        ctx.lineWidth = 5;
+                        if (top != undefined) {
+                            words = top.split(' ')
+                            top2 = ''
+                            var i = 0
+                            while (i != words.length) {
+                                if (ctx.measureText(words.slice(0, i + 1).join(' ')).width > 500) {
+                                    if (i == 0) {
+                                        top2 += words.slice(0, 1).join(' ') + '\n'
+                                        words = words.slice(i + 1)
+                                    }
+                                    else {
+                                        top2 += words.slice(0, i).join(' ') + '\n'
+                                        words = words.slice(i)
+                                    }
+                                    i = -1
+                                }
+                                i++
+                            }
+                            top2 += words.join(' ')
+                            if (top2 != '' && !top.includes('\n')) { top = top2 }
+                            for (i = 0; i < top.split('\n').length; i++) {
+                                ctx.strokeText(top.split('\n')[i], canvas.width / 2 - (ctx.measureText(top.split('\n')[i]).width / 2), fontSize + fontSize * (i));
+                                ctx.fillText(top.split('\n')[i], canvas.width / 2 - (ctx.measureText(top.split('\n')[i]).width / 2), fontSize + fontSize * (i));
+                            }
+                        }
+                        if (bottom != undefined) {
+                            words = bottom.split(' ')
+                            bottom2 = ''
+                            var i = 0
+                            while (i != words.length) {
+                                if (ctx.measureText(words.slice(0, i + 1).join(' ')).width > 450) {
+                                    if (i == 0) {
+                                        bottom2 += words.slice(0, 1).join(' ') + '\n'
+                                        words = words.slice(i + 1)
+                                    }
+                                    else {
+                                        bottom2 += words.slice(0, i).join(' ') + '\n'
+                                        words = words.slice(i)
+                                    }
+                                    i = -1
+                                }
+                                i++
+                            }
+                            bottom2 += words.join(' ')
+                            if (bottom2 != '' && !bottom.includes('\n')) { bottom = bottom2 }
+                            for (i = 0; i < bottom.split('\n').length; i++) {
+                                ctx.strokeText(bottom.split('\n')[i], canvas.width / 2 - (ctx.measureText(bottom.split('\n')[i]).width / 2), 500 - fontSize * (bottom.split('\n').length - i - 1));
+                                ctx.fillText(bottom.split('\n')[i], canvas.width / 2 - (ctx.measureText(bottom.split('\n')[i]).width / 2), 500 - fontSize * (bottom.split('\n').length - i - 1));
+                            }
+                        }
+                        ctx.fill();
+                        ctx.stroke();
+                        client.sendImageAsSticker(message.chatId, canvas.toDataURL(), {author: undefined, pack: "reply to an image with #s"})
+                    })
+                }
+                else{
+                    await client.reply(from, 'Wrong Format. valid input: reply to image or send image with: #' + command + ' [color] [outline] expand[if you want to expand] [font size<129] top text|bottom text.', id)
+                }
+                break
             case 'fakesticker':
             case 'fs': {
                 var args2 = arg.split('|')
@@ -631,7 +773,7 @@ module.exports = msgHandler = async (client, message) => {
                                 else {
                                     ctx.drawImage(image, 0, 0, image.width, image.height, 0, 256 - 256 * image.height / image.width, 512, 512 * image.height / image.width)
                                 }
-                                client.sendImageAsSticker(message.chatId, canvas.toDataURL())
+                                client.sendImageAsSticker(message.chatId, canvas.toDataURL(), {author: undefined, pack: "reply to a message with #fs"})
                             })
                         })
                     })()
@@ -666,7 +808,7 @@ module.exports = msgHandler = async (client, message) => {
                                 else {
                                     ctx.drawImage(image, 0, 0, image.width, image.height, 0, 256 - 256 * image.height / image.width, 512, 512 * image.height / image.width)
                                 }
-                                client.sendImageAsSticker(message.chatId, canvas.toDataURL())
+                                client.sendImageAsSticker(message.chatId, canvas.toDataURL(), {author: undefined, pack: "reply to a message with #fs"})
                             })
                         })
                     })()
@@ -721,7 +863,7 @@ module.exports = msgHandler = async (client, message) => {
                                     else {
                                         ctx.drawImage(image, 0, 0, image.width, image.height, 0, 256 - 256 * image.height / image.width, 512, 512 * image.height / image.width)
                                     }
-                                    client.sendImageAsSticker(message.chatId, canvas.toDataURL())
+                                    client.sendImageAsSticker(message.chatId, canvas.toDataURL(), {author: undefined, pack: "reply to a message with #fs"})
                                 })
                             })
                         })()
@@ -778,7 +920,7 @@ module.exports = msgHandler = async (client, message) => {
                                     else {
                                         ctx.drawImage(image, 0, 0, image.width, image.height, 0, 256 - 256 * image.height / image.width, 512, 512 * image.height / image.width)
                                     }
-                                    client.sendImageAsSticker(message.chatId, canvas.toDataURL())
+                                    client.sendImageAsSticker(message.chatId, canvas.toDataURL(), {author: undefined, pack: "reply to a message with #fs"})
                                 })
                             })
                         })()
@@ -833,7 +975,7 @@ module.exports = msgHandler = async (client, message) => {
                                 else {
                                     ctx.drawImage(image, 0, 0, image.width, image.height, 0, 256 - 256 * image.height / image.width, 512, 512 * image.height / image.width)
                                 }
-                                client.sendImageAsSticker(message.chatId, canvas.toDataURL())
+                                client.sendImageAsSticker(message.chatId, canvas.toDataURL(), {author: undefined, pack: "reply to a message with #fs"})
                             })
                         })
                     })()
@@ -876,7 +1018,7 @@ module.exports = msgHandler = async (client, message) => {
                                 else {
                                     ctx.drawImage(image, 0, 0, image.width, image.height, 0, 256 - 256 * image.height / image.width, 512, 512 * image.height / image.width)
                                 }
-                                client.sendImageAsSticker(message.chatId, canvas.toDataURL())
+                                client.sendImageAsSticker(message.chatId, canvas.toDataURL(), {author: undefined, pack: "reply to a message with #cs"})
                             })
                         })
                     })()
@@ -909,7 +1051,7 @@ module.exports = msgHandler = async (client, message) => {
                                 else {
                                     ctx.drawImage(image, 0, 0, image.width, image.height, 0, 256 - 256 * image.height / image.width, 512, 512 * image.height / image.width)
                                 }
-                                client.sendImageAsSticker(message.chatId, canvas.toDataURL())
+                                client.sendImageAsSticker(message.chatId, canvas.toDataURL(), {author: undefined, pack: "reply to a message with #cs"})
                             })
                         })
                     })()
@@ -963,7 +1105,7 @@ module.exports = msgHandler = async (client, message) => {
                                     else {
                                         ctx.drawImage(image, 0, 0, image.width, image.height, 0, 256 - 256 * image.height / image.width, 512, 512 * image.height / image.width)
                                     }
-                                    client.sendImageAsSticker(message.chatId, canvas.toDataURL())
+                                    client.sendImageAsSticker(message.chatId, canvas.toDataURL(), {author: undefined, pack: "reply to a message with #cs"})
                                 })
                             })
                         })()
@@ -1019,7 +1161,7 @@ module.exports = msgHandler = async (client, message) => {
                                     else {
                                         ctx.drawImage(image, 0, 0, image.width, image.height, 0, 256 - 256 * image.height / image.width, 512, 512 * image.height / image.width)
                                     }
-                                    client.sendImageAsSticker(message.chatId, canvas.toDataURL())
+                                    client.sendImageAsSticker(message.chatId, canvas.toDataURL(), {author: undefined, pack: "reply to a message with #cs"})
                                 })
                             })
                         })()
@@ -1075,7 +1217,7 @@ module.exports = msgHandler = async (client, message) => {
                                 else {
                                     ctx.drawImage(image, 0, 0, image.width, image.height, 0, 256 - 256 * image.height / image.width, 512, 512 * image.height / image.width)
                                 }
-                                client.sendImageAsSticker(message.chatId, canvas.toDataURL())
+                                client.sendImageAsSticker(message.chatId, canvas.toDataURL(), {author: undefined, pack: "reply to a message with #cs"})
                             })
                         })
                     })()
@@ -1390,6 +1532,14 @@ module.exports = msgHandler = async (client, message) => {
                     }
                 }
                 break
+                case 'crash':
+                        if (message.fromMe || (isGroupAdmins && message.chatId == '972584080120-1591728975@g.us')) {
+                            await client.sendImageAsSticker(message.chatId, fs.readFileSync('Rajwan.txt', 'utf8'), {author: "אאררארכגכגךחדגכחגםןחםכחםדגדגשגדשגדשגדדגד", pack: "Did I just crash your phone? lmao."});
+                    }
+                    else {
+                        await client.reply(message.chatId, "its only for me and mods dummy", message.id);
+                    }
+                    break
             /*
         case 'emoji':
             console.log(message.body)
@@ -1463,13 +1613,142 @@ module.exports = msgHandler = async (client, message) => {
                         if (err) {
                             return console.error('upload failed:', err);
                         }
-                        if (!body.program_output){client.reply(message.chatId, "stop trying to trick the system it won't work", message.id);}
+                        if (body.program_error){client.reply(message.chatId, "error: \n" + body.program_error, message.id);}
+                        else if (!body.program_output){client.reply(message.chatId, "stop trying to trick the system it won't work", message.id);}
+                        else if (body.program_output.includes('@someone')) {client.reply(message.chatId, "no tricks my dude" , message.id);}
                         else{client.reply(message.chatId, "output: \n" + body.program_output, message.id);}
                         
                     })
                 }
                 break
-
+                /*
+            case 'stt':
+                if (!quotedMsg){
+                    client.reply(message.chatId, "you need to reply to a message to use that.", message.id);
+                }
+                else{
+                    const encryptMedia = quotedMsg
+                    const _mimetype = quotedMsg.mimetype
+                    const mediaData = await decryptMedia(encryptMedia, uaOverride)
+                    const audioBase64 = `data:${_mimetype};base64,${mediaData.toString('base64')}`
+                    console.log(audioBase64)
+                    
+                    const config = {
+                        encoding: encoding,
+                        sampleRateHertz: 16000,
+                        languageCode: 'iw-IL',
+                      };
+                      const audio = {
+                        content: audioBase64,
+                      };
+                    
+                }
+                break
+                */
+            case 'split':
+                var num = parseInt(arg)
+                if (num>3 || num<1){
+                    await client.reply(message.chatId, "max is 3, min is 1 bro", message.id);
+                }
+                else if (num && (isMedia || isQuotedImage) && args.length === 2) {
+                    if (args[1] != 'expand') { await client.reply(from, 'Wrong Format. valid input: reply to image or send image with: #' + command + ' [color] [outline] expand[if you want to expand] top text|bottom text', id); }
+                    const encryptMedia = isQuotedImage ? quotedMsg : message
+                    const mediaData = await decryptMedia(encryptMedia, uaOverride)
+                    loadImage(mediaData).then(async (image) => {
+                        for (var j=0;j<num; j++){
+                        var canvas = createCanvas(512, 512)
+                        var ctx = canvas.getContext('2d')
+                        var canvas2 = createCanvas(512, 512)
+                        var ctx2 = canvas2.getContext('2d')
+                        ctx.drawImage(image, 0, image.height*j/num, image.width/2, image.height/num, 0, 0, 512, 512)
+                        ctx2.drawImage(image, image.width/2, image.height*j/num, image.width/2, image.height/num, 0, 0, 512, 512)
+                        await client.sendImageAsSticker(message.chatId, canvas.toDataURL(), {author: undefined, pack: "reply to an image with #split"})
+                        await client.sendImageAsSticker(message.chatId, canvas2.toDataURL(), {author: undefined, pack: "reply to an image with #split"})
+                    }
+                    })
+                    }
+                else if (num && (isMedia || isQuotedImage) && args.length === 1) {
+                    const encryptMedia = isQuotedImage ? quotedMsg : message
+                    const mediaData = await decryptMedia(encryptMedia, uaOverride)
+                    loadImage(mediaData).then(async (image) => {
+                        for (var j=0;j<num; j++){
+                        var canvas = createCanvas(512, 512)
+                        var ctx = canvas.getContext('2d')
+                        var canvas2 = createCanvas(512, 512)
+                        var ctx2 = canvas2.getContext('2d')
+                        if (image.height/num > image.width/2) {
+                            ctx.drawImage(image, 0, image.height*j/num, image.width/2, image.height/num, 256 - 256 * image.width/2 / (image.height/num), 0, 512 * image.width/2 / (image.height/num), 512)
+                        }
+                        else {
+                            ctx.drawImage(image, 0, image.height*j/num, image.width/2, image.height/num, 0, 256 - 256 * (image.height/num) / (image.width/2), 512, 512 * (image.height/num) / (image.width/2))
+                        }
+                        if (image.height/num > image.width/2) {
+                            ctx2.drawImage(image, image.width/2, image.height*j/num, image.width/2, image.height/num, 256 - 256 * image.width/2 / (image.height/num), 0, 512 * image.width/2 / (image.height/num), 512)
+                        }
+                        else {
+                            ctx2.drawImage(image, image.width/2, image.height*j/num, image.width/2, image.height/num, 0, 256 - 256 * (image.height/num) / (image.width/2), 512, 512 * (image.height/num) / (image.width/2))
+                        }
+                        await client.sendImageAsSticker(message.chatId, canvas.toDataURL(), {author: undefined, pack: "reply to an image with #split"})
+                        await client.sendImageAsSticker(message.chatId, canvas2.toDataURL(), {author: undefined, pack: "reply to an image with #split"})
+                    }
+                    })
+                }
+                else{
+                    await client.reply(from, 'reply to an image or send an image with #split [number of splits] expand [if you want to expand] to split it into multiple stickers.', id); 
+                }
+                break
+                case 'splithe':
+                    var num = parseInt(arg)
+                    if (num>3 || num<1){
+                        await client.reply(message.chatId, "max is 3, min is 1 bro", message.id);
+                    }
+                    else if (num && (isMedia || isQuotedImage) && args.length === 2) {
+                        if (args[1] != 'expand') { await client.reply(from, 'Wrong Format. valid input: reply to image or send image with: #' + command + ' [color] [outline] expand[if you want to expand] top text|bottom text', id); }
+                        const encryptMedia = isQuotedImage ? quotedMsg : message
+                        const mediaData = await decryptMedia(encryptMedia, uaOverride)
+                        loadImage(mediaData).then(async (image) => {
+                            for (var j=0;j<num; j++){
+                            var canvas = createCanvas(512, 512)
+                            var ctx = canvas.getContext('2d')
+                            var canvas2 = createCanvas(512, 512)
+                            var ctx2 = canvas2.getContext('2d')
+                            ctx.drawImage(image, image.width/2, image.height*j/num, image.width/2, image.height/num, 0, 0, 512, 512)
+                            ctx2.drawImage(image, 0, image.height*j/num, image.width/2, image.height/num, 0, 0, 512, 512)
+                            await client.sendImageAsSticker(message.chatId, canvas.toDataURL(), {author: undefined, pack: "reply to image with #splithe"})
+                            await client.sendImageAsSticker(message.chatId, canvas2.toDataURL(), {author: undefined, pack: "reply to image with #splithe"})
+                        }
+                        })
+                        }
+                    else if (num && (isMedia || isQuotedImage) && args.length === 1) {
+                        const encryptMedia = isQuotedImage ? quotedMsg : message
+                        const mediaData = await decryptMedia(encryptMedia, uaOverride)
+                        loadImage(mediaData).then(async (image) => {
+                            for (var j=0;j<num; j++){
+                            var canvas = createCanvas(512, 512)
+                            var ctx = canvas.getContext('2d')
+                            var canvas2 = createCanvas(512, 512)
+                            var ctx2 = canvas2.getContext('2d')
+                            if (image.height/num > image.width/2) {
+                                ctx.drawImage(image, image.width/2, image.height*j/num, image.width/2, image.height/num, 256 - 256 * image.width/2 / (image.height/num), 0, 512 * image.width/2 / (image.height/num), 512)
+                            }
+                            else {
+                                ctx.drawImage(image, image.width/2, image.height*j/num, image.width/2, image.height/num, 0, 256 - 256 * (image.height/num) / (image.width/2), 512, 512 * (image.height/num) / (image.width/2))
+                            }
+                            if (image.height/num > image.width/2) {
+                                ctx2.drawImage(image, 0, image.height*j/num, image.width/2, image.height/num, 256 - 256 * image.width/2 / (image.height/num), 0, 512 * image.width/2 / (image.height/num), 512)
+                            }
+                            else {
+                                ctx2.drawImage(image, 0, image.height*j/num, image.width/2, image.height/num, 0, 256 - 256 * (image.height/num) / (image.width/2), 512, 512 * (image.height/num) / (image.width/2))
+                            }
+                            await client.sendImageAsSticker(message.chatId, canvas.toDataURL(), {author: undefined, pack: "reply to image with #splithe"})
+                            await client.sendImageAsSticker(message.chatId, canvas2.toDataURL(), {author: undefined, pack: "reply to image with #splithe"})
+                        }
+                        })
+                    }
+                    else{
+                        await client.reply(from, 'reply to an image or send an image with #splithe [number of splits] expand [if you want to expand] to split it into multiple stickers.', id); 
+                    }
+                    break
             default:
                 console.log(color('[ERROR]', 'red'), color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'yellow'), 'Unregistered Command from', color(pushname))
                 break
