@@ -51,7 +51,7 @@ if an error does happen, do
 > npm start
 ```
 
-Also, to use the Wolfram alpha API go to https://developer.wolframalpha.com/portal/myapps/ and fill the api key (searck KEY) in \handler\message\index.js .
+Also, to use the Wolfram alpha API go to https://developer.wolframalpha.com/portal/myapps/ and fill the api key (search KEY) in \handler\message\index.js .
 
 after running it you need to scan the qr
 
