@@ -38,6 +38,12 @@ Install the dependencies:
 > npm install
 ```
 
+if an error does happen, do 
+
+```bash
+> npm install sharp
+```
+
 ### Usage
 1. run the Whatsapp bot
 
