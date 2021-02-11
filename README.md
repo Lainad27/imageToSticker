@@ -12,7 +12,7 @@
 | :-----------: | :--------------------------------: |
 |       ✅       | Send Image of Message as Sticker |
 |       ✅       | Sticker Meme Maker               |
-|       ✅       | Animated sticker Meme Maker      |
+|       ✅       | Animated Sticker Meme Maker      |
 
 | Other         |                Feature           |
 | :-----------: | :--------------------------------: |
