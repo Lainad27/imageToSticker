@@ -753,7 +753,7 @@ module.exports = msgHandler = async (client, message) => {
                     var data3 = data2
                     var start = 38;
                     start = start + (args2[1].split('\n').length - 1) * 19
-                    data3 = (data3).replace('FLAG_TIME', args2[0]).replace('FLAG_MSG', args2[1]).replace('FLAG_NAME', args2[2]).replace('FLAG_PHONE', args2.slice(3).join(' ')).replace('38px', start.toString() + 'px');
+                    data3 = (data3).replace('FLAG_TIME', args2[0]).replace('FLAG_MSG', args2[1]).replace('FLAG_NAME', args2[2]).replace('FLAG_PHONE', args2.slice(3).join(' ')).replace('t: 38px', 't: ' + start.toString() + 'px');
                     (async () => {
                         const browser = await puppeteer.launch();
                         const page = await browser.newPage();
@@ -788,7 +788,7 @@ module.exports = msgHandler = async (client, message) => {
                     var start = 38;
                     start = start + (quotedMsgObj.content.split('\n').length - 1) * 19
                     var phonenumber = "+" + purephone.slice(0, 3) + " " + purephone.slice(3, 5) + "-" + purephone.slice(5, 8) + "-" + purephone.slice(8, 12)
-                    data3 = (data3).replace('FLAG_TIME', moment(t * 1000).format('HH:mm')).replace('FLAG_MSG', encode(quotedMsgObj.content)).replace('FLAG_NAME', encode(quotedMsgObj.sender.pushname)).replace('FLAG_PHONE', encode(phonenumber)).replace('38px', start.toString() + 'px');
+                    data3 = (data3).replace('FLAG_TIME', moment(t * 1000).format('HH:mm')).replace('FLAG_MSG', encode(quotedMsgObj.content)).replace('FLAG_NAME', encode(quotedMsgObj.sender.pushname)).replace('FLAG_PHONE', encode(phonenumber)).replace('t: 38px', 't: ' + start.toString() + 'px');
                     (async () => {
                         const browser = await puppeteer.launch();
                         const page = await browser.newPage();
@@ -899,7 +899,7 @@ module.exports = msgHandler = async (client, message) => {
                         var prec = 'style="height: 100%;"'
                         if (height == 330) { prec = 'style="width: 100%;"' }
 
-                        data3 = (data3).replace('FLAG_TIME', moment(t * 1000).format('HH:mm')).replace('FLAG_MSG', encode(quotedMsgObj.caption)).replace('FLAG_NAME', encode(quotedMsgObj.sender.pushname)).replace('FLAG_PHONE', encode(phonenumber)).replace('57px', start.toString() + 'px').replace('FLAG_IMAGE', encode(imageBase64)).replace('148', height).replace('330', width).replace('style="width: 100%;"', prec);
+                        data3 = (data3).replace('FLAG_TIME', moment(t * 1000).format('HH:mm')).replace('FLAG_MSG', encode(quotedMsgObj.caption)).replace('FLAG_NAME', encode(quotedMsgObj.sender.pushname)).replace('FLAG_PHONE', encode(phonenumber)).replace('t: 57px', 't: ' + start.toString() + 'px').replace('FLAG_IMAGE', encode(imageBase64)).replace('148', height).replace('330', width).replace('style="width: 100%;"', prec);
 
                         (async () => {
                             const browser = await puppeteer.launch();
@@ -954,7 +954,7 @@ module.exports = msgHandler = async (client, message) => {
                     start = start + (args2[1].split('\n').length - 1) * 19
                     var prec = 'style="height: 100%;"'
                     if (height == 330) { prec = 'style="width: 100%;"' }
-                    data3 = (data3).replace('FLAG_TIME', args2[0]).replace('FLAG_MSG', args2[1]).replace('FLAG_NAME', args2[2]).replace('FLAG_PHONE', args2.slice(3).join(' ')).replace('57px', start.toString() + 'px').replace('FLAG_IMAGE', encode(imageBase64)).replace('148', height).replace('330', width).replace('style="width: 100%;"', prec);
+                    data3 = (data3).replace('FLAG_TIME', args2[0]).replace('FLAG_MSG', args2[1]).replace('FLAG_NAME', args2[2]).replace('FLAG_PHONE', args2.slice(3).join(' ')).replace('t: 57px', 't: ' + start.toString() + 'px').replace('FLAG_IMAGE', encode(imageBase64)).replace('148', height).replace('330', width).replace('style="width: 100%;"', prec);
 
                     (async () => {
                         const browser = await puppeteer.launch();
@@ -998,7 +998,7 @@ module.exports = msgHandler = async (client, message) => {
                     var data3 = data4
                     var start = 38;
                     start = start + (args2[1].split('\n').length - 1) * 19
-                    data3 = (data3).replace('FLAG_TIME', args2[0]).replace('FLAG_MSG', args2[1]).replace('FLAG_NAME', args2[2]).replace('38px', start.toString() + 'px');
+                    data3 = (data3).replace('FLAG_TIME', args2[0]).replace('FLAG_MSG', args2[1]).replace('FLAG_NAME', args2[2]).replace('t: 38px', 't: ' + start.toString() + 'px');
                     (async () => {
                         const browser = await puppeteer.launch();
                         const page = await browser.newPage();
@@ -1031,7 +1031,7 @@ module.exports = msgHandler = async (client, message) => {
                     var data3 = data4
                     var start = 38;
                     start = start + (quotedMsgObj.content.split('\n').length - 1) * 19
-                    data3 = (data3).replace('FLAG_TIME', moment(t * 1000).format('HH:mm')).replace('FLAG_MSG', encode(encode(quotedMsgObj.content))).replace('FLAG_NAME', encode(arg)).replace('38px', start.toString() + 'px');
+                    data3 = (data3).replace('FLAG_TIME', moment(t * 1000).format('HH:mm')).replace('FLAG_MSG', encode(encode(quotedMsgObj.content))).replace('FLAG_NAME', encode(arg)).replace('t: 38px', 't: ' + start.toString() + 'px');
                     (async () => {
                         const browser = await puppeteer.launch();
                         const page = await browser.newPage();
@@ -1140,7 +1140,7 @@ module.exports = msgHandler = async (client, message) => {
                         var prec = 'style="height: 100%;"'
                         if (height == 330) { prec = 'style="width: 100%;"' }
 
-                        data3 = (data3).replace('FLAG_TIME', moment(t * 1000).format('HH:mm')).replace('FLAG_MSG', encode(quotedMsgObj.caption)).replace('FLAG_NAME', encode(arg)).replace('57px', start.toString() + 'px').replace('FLAG_IMAGE', encode(imageBase64)).replace('148', height).replace('330', width).replace('style="width: 100%;"', prec);
+                        data3 = (data3).replace('FLAG_TIME', moment(t * 1000).format('HH:mm')).replace('FLAG_MSG', encode(quotedMsgObj.caption)).replace('FLAG_NAME', encode(arg)).replace('t: 57px', 't: ' + start.toString() + 'px').replace('FLAG_IMAGE', encode(imageBase64)).replace('148', height).replace('330', width).replace('style="width: 100%;"', prec);
 
                         (async () => {
                             const browser = await puppeteer.launch();
@@ -1196,7 +1196,7 @@ module.exports = msgHandler = async (client, message) => {
                     start = start + (args2[1].split('\n').length - 1) * 19
                     var prec = 'style="height: 100%;"'
                     if (height == 330) { prec = 'style="width: 100%;"' }
-                    data3 = (data3).replace('FLAG_TIME', args2[0]).replace('FLAG_MSG', args2[1]).replace('FLAG_NAME', args2[2]).replace('57px', start.toString() + 'px').replace('FLAG_IMAGE', encode(imageBase64)).replace('148', height).replace('330', width).replace('style="width: 100%;"', prec);
+                    data3 = (data3).replace('FLAG_TIME', args2[0]).replace('FLAG_MSG', args2[1]).replace('FLAG_NAME', args2[2]).replace('t: 57px', 't: ' + start.toString() + 'px').replace('FLAG_IMAGE', encode(imageBase64)).replace('148', height).replace('330', width).replace('style="width: 100%;"', prec);
 
                     (async () => {
                         const browser = await puppeteer.launch();
