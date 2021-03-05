@@ -171,9 +171,6 @@ module.exports = msgHandler = async (client, message) => {
 
         switch (command) {
             // Menu and TnC
-            case 'seker':
-                console.log(message)
-                break
             case 'speed':
             case 'ping':
                 await client.sendText(from, `Pong!!!!\nSpeed: ${processTime(t, moment())} _Second_`)
@@ -182,7 +179,7 @@ module.exports = msgHandler = async (client, message) => {
             case 'help':
             case 'commands':
                 if (arg == '#help ' || arg == '#help') {
-                    await client.reply(from, 'Hello. This is a bot that does cool things for Whatsapp.\n Avialable commands: ping, help, sticker, fakesticker, contactsticker, botstat, wolf, mj, black, toggle, compile, fps.\n send "#help [command]" for command info', id);
+                    await client.reply(from, 'Hello. This is a bot that does cool things for Whatsapp.\n Avialable commands: ping, help, sticker, fakesticker, contactsticker, botstat, wolf, mj, black, toggle, compile, fps.\n send "#help [command]" for command info. \n \n github: https://github.com/Lainad27/imageToSticker', id);
                 }
                 else {
                     switch (arg) {
@@ -238,11 +235,6 @@ module.exports = msgHandler = async (client, message) => {
         case 'tnc':
             await client.sendText(from, menuId.textTnC())
             break
-        case 'menu':
-        case 'help':
-            await client.sendText(from, menuId.textMenu(pushname))
-                .then(() => ((isGroupMsg) && (isGroupAdmins)) ? client.sendText(from, 'Menu Admin Grup: *#menuadmin*') : null)
-            break
         case 'menuadmin':
             if (!isGroupMsg) return client.reply(from, 'Maaf, perintah ini hanya dapat dipakai didalam grup! [Group Only]', id)
             if (!isGroupAdmins) return client.reply(from, 'Gagal, perintah ini hanya dapat digunakan oleh admin grup! [Admin Group Only]', id)
@@ -294,7 +286,7 @@ module.exports = msgHandler = async (client, message) => {
             }
             */
            case 'fps': {
-            if (((isMedia && (mimetype === 'video/mp4' && message.duration < 30 || mimetype === 'image/gif' && message.duration < 30)) || !isQuotedImage && (quotedMsg != null) && (quotedMsgObj.mimetype === 'video/mp4' && quotedMsgObj.duration < 30 || quotedMsgObj.mimetype === 'image/gif' && quotedMsgObj.duration < 30)) && args.length<2) {
+            if (((isMedia && (mimetype === 'video/mp4' && message.duration < 60 || mimetype === 'image/gif' && message.duration < 60)) || !isQuotedImage && (quotedMsg != null) && (quotedMsgObj.mimetype === 'video/mp4' && quotedMsgObj.duration < 60 || quotedMsgObj.mimetype === 'image/gif' && quotedMsgObj.duration < 60)) && args.length<2) {
                 const encryptMedia = (quotedMsg != null) ? quotedMsg : message
                 const mediaData = await decryptMedia(encryptMedia, uaOverride)
                 client.reply(from, 'this will take a while to process.', id)
@@ -319,7 +311,7 @@ module.exports = msgHandler = async (client, message) => {
                     }
                 }).run()
             }
-            else if (((isMedia && (mimetype === 'video/mp4' && message.duration < 30 || mimetype === 'image/gif' && message.duration < 30)) || !isQuotedImage && (quotedMsg != null) && (quotedMsgObj.mimetype === 'video/mp4' && quotedMsgObj.duration < 30 || quotedMsgObj.mimetype === 'image/gif' && quotedMsgObj.duration < 30)) && args.length>1) {
+            else if (((isMedia && (mimetype === 'video/mp4' && message.duration < 60 || mimetype === 'image/gif' && message.duration < 60)) || !isQuotedImage && (quotedMsg != null) && (quotedMsgObj.mimetype === 'video/mp4' && quotedMsgObj.duration < 60 || quotedMsgObj.mimetype === 'image/gif' && quotedMsgObj.duration < 60)) && args.length>2) {
                 const encryptMedia = (quotedMsg != null) ? quotedMsg : message
                 const mediaData = await decryptMedia(encryptMedia, uaOverride)
                 client.reply(from, 'this will take a while to process.', id)
@@ -331,11 +323,13 @@ module.exports = msgHandler = async (client, message) => {
                     var command2 = ffmpeg('./media/output.mp4').size('240x?').aspect('1:1').fps(30);;
                     if (args[2].toLowerCase() == 'expand') {
                         var meme = arg.split('expand').slice(1).join(' ')
+                        meme.replace(`'`,``).replace(String.fromCharCode(92),'')
                         if (!meme.includes('|')) { top = meme }
                         else { var top = meme.split('|')[0]; var bottom = meme.split('|').slice(1).join(' ') }
                     }
                     else {
                         var meme = args.slice(2).join(' ')
+                        meme.replace(`'`,``).replace(String.fromCharCode(92),'')
                         if (!meme.includes('|')) { top = meme }
                         else { var top = meme.split('|')[0]; var bottom = meme.split('|').slice(1).join(' ') }
 
@@ -344,7 +338,7 @@ module.exports = msgHandler = async (client, message) => {
                     if (!ValidColors.includes(args[0].toLowerCase()) || !ValidColors.includes(args[1].toLowerCase())){return client.reply(from, 'one of the colors you entered is not valid.  valid input: reply to image or send image with: #' + command + ' [color] [shadow] expand[if you want to expand] top text|bottom text.', id);}
                     var canvas = createCanvas(240, 240)
                     var ctx = canvas.getContext('2d')
-                    ctx.font = '32px "Secular"'
+                    ctx.font = '28px "Secular"'
                     ctx.fillStyle = args[0];
                     ctx.strokeStyle = args[1];
                     ctx.lineWidth = 5;
@@ -370,7 +364,7 @@ module.exports = msgHandler = async (client, message) => {
                         top2 += words.join(' ')
                         if (top2 != '' && !top.includes('\n')) { top = top2 }
                         for (i = 0; i < top.split('\n').length; i++) {
-                            command2.videoFilters({ filter: 'drawtext', options: { fontfile:'SecularOne-Regular.ttf', text: top.split('\n')[i], fontsize: 32, fontcolor: args[0], x: 120-(ctx.measureText(top.split('\n')[i]).width / 2), y: (top.split('\n').length * 32 - 20 * (i)-32), shadowcolor: args[1].toLowerCase(), shadowx: 2, shadowy: 2 } })
+                            command2.videoFilters({ filter: 'drawtext', options: { fontfile:'SecularOne-Regular.ttf', text: top.split('\n')[i], fontsize: 28, fontcolor: args[0], x: 120-(ctx.measureText(top.split('\n')[i]).width / 2), y: (top.split('\n').length * 32 - 20 * (i)-32), shadowcolor: args[1].toLowerCase(), shadowx: 2, shadowy: 2 } })
                         }
                     }
                     if (bottom != undefined) {
@@ -395,7 +389,7 @@ module.exports = msgHandler = async (client, message) => {
                         bottom2 += words.join(' ')
                         if (bottom2 != '' && !bottom.includes('\n')) { bottom = bottom2 }
                         for (i = 0; i < bottom.split('\n').length; i++) {
-                            command2.videoFilters({ filter: 'drawtext', options: { fontfile:'SecularOne-Regular.ttf', text: bottom.split('\n')[i], fontsize: 32, fontcolor: args[0], x: 120-(ctx.measureText(bottom.split('\n')[i]).width / 2), y: (200 - 20 * (i)), shadowcolor: args[1].toLowerCase(), shadowx: 2, shadowy: 2 } })
+                            command2.videoFilters({ filter: 'drawtext', options: { fontfile:'SecularOne-Regular.ttf', text: bottom.split('\n')[i], fontsize: 28, fontcolor: args[0], x: 120-(ctx.measureText(bottom.split('\n')[i]).width / 2), y: (200 - 20 * (i)), shadowcolor: args[1].toLowerCase(), shadowx: 2, shadowy: 2 } })
 
                         }
                     }
@@ -632,7 +626,7 @@ module.exports = msgHandler = async (client, message) => {
                 else if ((isMedia || isQuotedImage) && args.length === 0) {
 
                     const encryptMedia = isQuotedImage ? quotedMsg : message
-                    const mediaData = await decryptMedia(encryptMedia, uaOverride)
+                    const mediaData = await decryptMedia(encryptMedia, process.env.UserAgent)
                     loadImage(mediaData).then((image) => {
                         var canvas = createCanvas(512, 512)
                         var ctx = canvas.getContext('2d')
@@ -745,6 +739,7 @@ module.exports = msgHandler = async (client, message) => {
                 }
                 break
             case 'fakesticker':
+            case 'כד':
             case 'fs': {
                 var args2 = arg.split('|')
                 if (args2.length > 3 && !isQuotedImage && !isMedia) {
@@ -1475,8 +1470,26 @@ module.exports = msgHandler = async (client, message) => {
                 }, async function (data) {
                     if (!data.errors) {
                         try {
+                            /*
                             const png = await svgToImg.from(data.svg).toPng({ encoding: "base64" });
                             var createdUser = await client.sendImage(message.chatId, "data:image/png;base64," + png);
+                            */
+                            (async () => {
+                                const browser = await puppeteer.launch();
+                                const page = await browser.newPage();
+                                await page.setContent(data.svg);
+                                await page.waitForSelector('body > svg');          // wait for the selector to load
+                                const element1 = await page.$('body > svg');
+                                const boundingBox = await element1.boundingBox();
+                                await page.setViewport({
+                                    width: boundingBox.x,
+                                    height: boundingBox.y,
+                                    deviceScaleFactor: 8,
+                                  });
+                                var base64 = await element1.screenshot({ encoding: "base64", omitBackground: true, })
+                                await client.sendImage(message.chatId, `data:image/png;base64,${base64}`)
+                                await browser.close();
+                            })()
                         } catch (error) {
                             console.error(error)
                         }
