@@ -32,7 +32,6 @@ const WolframAlphaAPI = require('wolfram-alpha-api');
 const puppeteer = require('puppeteer');
 const waApi = WolframAlphaAPI('KEY');
 var mjAPI = require("mathjax-node");
-const svgToImg = require("svg-to-img");
 var sizeOf = require('image-size');
 const { encode } = require('html-entities');
 
