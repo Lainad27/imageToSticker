@@ -19,7 +19,7 @@
 |       ✅       | Compiler                         |
 |       ✅       | Mathjax                          |
 |       ✅       | Wolfram Alpha                    |
-|       ✅       | <a href="https://www.urbandictionary.com">urbandictionary</a> features     |
+|       ✅       | <a href="https://www.urbandictionary.com">urban dictionary</a> features     |
 
 ## Getting Started
 
