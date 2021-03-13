@@ -16,6 +16,7 @@ const fs2 = require('fs-extra')
 const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
 var ffmpeg = require('fluent-ffmpeg');
 ffmpeg.setFfmpegPath(ffmpegPath);
+const ud = require('urban-dictionary')
 const { registerFont, createCanvas, loadImage } = require('canvas')
 registerFont('SecularOne-Regular.ttf', { family: 'Secular' })
 var data2 = fs.readFileSync('a.txt', 'utf8');
@@ -214,7 +215,7 @@ module.exports = msgHandler = async (client, message) => {
                             client.reply(from, 'search in wolfram alpha with #wolf [what you want to search]. aliases: wolf.', id)
                             break
                         case 'mj':
-                            client.reply(from, 'Caution: works very badly, dont use. complie message to mathjax with #mj [what you want to complie]. aliases: mj.', id)
+                            client.reply(from, 'complie message to mathjax with #mj [what you want to complie]. aliases: mj.', id)
                             break
                         case 'toggle':
                             client.reply(from, 'for shana Aleph mods and me. #toggle [list of 0 and 1, e.g: 1,0,1,1,1,0]. to enable [netflix, tsaban, changestr, 2,6, at-someone]. if there is no argument, then if there is anything enabled #toggle will disable all, else #toggle will enable all. aliases: toggle.', id)
@@ -225,8 +226,38 @@ module.exports = msgHandler = async (client, message) => {
                             case 'fps':
                                 client.reply(from, 'reply to a video or send video with: #fps [color] [shadow] expand[if you want to expand] top text|bottom text. aliases: fps.', id)
                                 break
+                            case 'ud':
+                            case 'urban':
+                            case 'urbandictionary':
+                                client.reply(from, 'send #ud [phrase/word] to define it using urbandictionry.com . will reply text. aliases: ud, urban, urbandictionary.', id)
+                                break
+                            case 'udrand':
+                            case 'urbanrand':
+                            case 'urbandictionaryrand':
+                                client.reply(from, 'send #udrand to define a random word/phrase with urbandictionry.com . will reply text. aliases: udrand, urbanrand, urbandictionaryrand.', id)
+                                break
+                            case 'udwotd':
+                            case 'urbanwotd':
+                            case 'urbandictionarywotd':
+                                client.reply(from, 'send #udwotd to define the word of the day with urbandictionry.com . will reply text. aliases: udwotd, urbanwotd, urbandictionarywotd.', id)
+                                break
+                            case 'udpic':
+                            case 'urbanpic':
+                            case 'urbandictionarypic':
+                                client.reply(from, 'send #udpic [phrase/word] to define it using urbandictionry.com . will reply an image. aliases: udpic, urbanpic, urbandictionarypic.', id)
+                                break
+                            case 'udpicrand':
+                            case 'urbanpicrand':
+                            case 'urbandictionarypicrand':
+                                client.reply(from, 'send #udpicrand to define a random word/phrase with urbandictionry.com . will reply an image. aliases: udpicrand, urbanpicrand, urbandictionarypicrand.', id)
+                                break
+                            case 'udpicwotd':
+                            case 'urbanpicwotd':
+                            case 'urbandictionarypicwotd':
+                                client.reply(from, 'send #udwotd to define the word of the day with urbandictionry.com . will reply an image. aliases: udpicwotd, urbanpicwotd, urbandictionarypicwotd.', id)
+                                break
                             default:
-                            client.reply(from, 'thats not a command.', id)
+                            client.reply(from, `that's not a command.`, id)
                     }
                 }
                 break
@@ -1657,6 +1688,177 @@ module.exports = msgHandler = async (client, message) => {
                 }
                 break
                 */
+            case 'ud':
+            case 'urban':
+            case 'urbandictionary':
+                  // Promise
+                  ud.define(arg).then((results) => {      
+                      var mess = ''            
+                    Object.entries(results[0]).forEach(([key, prop]) => {
+                        if (key!='sound_urls' && key!='defid' && key!='current_vote' && key!='example') {
+                            if (key=='word' || key=='definition'){
+                                mess = `${key}: ${prop} \n ${mess}`
+                                if (key=='definition'){
+                                    mess = `${mess} example: ${results[0]['example']}  \n`
+                                }
+                            }
+                            else {
+                                mess += `${key}: ${prop}`
+                                mess += ', '
+                            }
+                        }
+                    })
+                    client.reply(from,`${mess}` , message.id);
+                  }).catch((error) => {
+                    client.reply(from,`${error.message}` , message.id);
+                  })
+                  break
+                  case 'udrand':
+                    case 'urbanrand':
+                    case 'urbandictionaryrand':
+                          // Promise
+                          ud.random().then((results) => {      
+                              var mess = ''            
+                            Object.entries(results[0]).forEach(([key, prop]) => {
+                                if (key!='sound_urls' && key!='defid' && key!='current_vote' && key!='example') {
+                                    if (key=='word' || key=='definition'){
+                                        mess = `${key}: ${prop} \n ${mess}`
+                                        if (key=='definition'){
+                                            mess = `${mess} example: ${results[0]['example']}  \n`
+                                        }
+                                    }
+                                    else {
+                                        mess += `${key}: ${prop}`
+                                        mess += ', '
+                                    }
+                                }
+                            })
+                            client.reply(from,`${mess}` , message.id);
+                          }).catch((error) => {
+                            client.reply(from,`${error.message}` , message.id);
+                          })
+                          break
+                          case 'udwotd':
+                            case 'urbanwotd':
+                            case 'urbandictionarywotd':
+                                  // Promise
+                                  ud.wordsOfTheDay().then((results) => {      
+                                      var mess = ''            
+                                    Object.entries(results[0]).forEach(([key, prop]) => {
+                                        if (key!='sound_urls' && key!='defid' && key!='current_vote' && key!='example') {
+                                            if (key=='word' || key=='definition'){
+                                                mess = `${key}: ${prop} \n ${mess}`
+                                                if (key=='definition'){
+                                                    mess = `${mess} example: ${results[0]['example']}  \n`
+                                                }
+                                            }
+                                            else {
+                                                mess += `${key}: ${prop}`
+                                                mess += ', '
+                                            }
+                                        }
+                                    })
+                                    client.reply(from,`${mess}` , message.id);
+                                  }).catch((error) => {
+                                    client.reply(from,`${error.message}` , message.id);
+                                  })
+                                  break
+            case 'udpic':
+            case 'urbanpic':
+            case 'urbandictionarypic':
+                  // Promise
+                  ud.define(arg).then((results) => {      
+                    (async () => {
+                        const browser = await puppeteer.launch();
+                        const page = await browser.newPage();
+                        await page.goto(results[0]['permalink']);
+                        await page.evaluate(() => {
+                            let example = document.querySelector('#content > div:nth-child(1) > a');
+                          
+                            example.parentNode.removeChild(example);
+                          });                          
+                        await page.waitForSelector('#content > div:nth-child(1)');          // wait for the selector to load
+                        const element1 = await page.$('#content > div:nth-child(1)');
+                        /*
+                        const boundingBox = await element1.boundingBox();
+                        await page.setViewport({
+                            width: boundingBox.x,
+                            height: boundingBox.y,
+                            deviceScaleFactor: 8,
+                          });
+                          */
+                        var base64 = await element1.screenshot({ encoding: "base64", omitBackground: true, })
+                        await client.sendImage(message.chatId, `data:image/png;base64,${base64}`)
+                        await browser.close();
+                    })()
+                  }).catch((error) => {
+                    client.reply(from,`${error.message}` , message.id);
+                  })
+                  break
+                  case 'udpicrand':
+                    case 'urbanpicrand':
+                    case 'urbandictionarypicrand':
+                          // Promise
+                          ud.random().then((results) => {      
+                            (async () => {
+                                const browser = await puppeteer.launch();
+                                const page = await browser.newPage();
+                                await page.goto(results[0]['permalink']);
+                                await page.evaluate(() => {
+                                    let example = document.querySelector('#content > div:nth-child(1) > a');
+                                  
+                                    example.parentNode.removeChild(example);
+                                  });                          
+                                await page.waitForSelector('#content > div:nth-child(1)');          // wait for the selector to load
+                                const element1 = await page.$('#content > div:nth-child(1)');
+                                /*
+                                const boundingBox = await element1.boundingBox();
+                                await page.setViewport({
+                                    width: boundingBox.x,
+                                    height: boundingBox.y,
+                                    deviceScaleFactor: 8,
+                                  });
+                                  */
+                                var base64 = await element1.screenshot({ encoding: "base64", omitBackground: true, })
+                                await client.sendImage(message.chatId, `data:image/png;base64,${base64}`)
+                                await browser.close();
+                            })()
+                          }).catch((error) => {
+                            client.reply(from,`${error.message}` , message.id);
+                          })
+                          break
+                          case 'udpicwotd':
+                            case 'urbanpicwotd':
+                            case 'urbandictionarypicwotd':
+                                  // Promise
+                                  ud.wordsOfTheDay().then((results) => {      
+                                    (async () => {
+                                        const browser = await puppeteer.launch();
+                                        const page = await browser.newPage();
+                                        await page.goto(results[0]['permalink']);
+                                        await page.evaluate(() => {
+                                            let example = document.querySelector('#content > div:nth-child(1) > a');
+                                          
+                                            example.parentNode.removeChild(example);
+                                          });                          
+                                        await page.waitForSelector('#content > div:nth-child(1)');          // wait for the selector to load
+                                        const element1 = await page.$('#content > div:nth-child(1)');
+                                        /*
+                                        const boundingBox = await element1.boundingBox();
+                                        await page.setViewport({
+                                            width: boundingBox.x,
+                                            height: boundingBox.y,
+                                            deviceScaleFactor: 8,
+                                          });
+                                          */
+                                        var base64 = await element1.screenshot({ encoding: "base64", omitBackground: true, })
+                                        await client.sendImage(message.chatId, `data:image/png;base64,${base64}`)
+                                        await browser.close();
+                                    })()
+                                  }).catch((error) => {
+                                    client.reply(from,`${error.message}` , message.id);
+                                  })
+                                  break
             case 'split':
                 var num = parseInt(arg)
                 if (num>3 || num<1){
