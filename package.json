@@ -44,6 +44,7 @@
     "require-from-web": "^1.2.0",
     "tiktok-scraper": "^1.4.0",
     "update-json-file": "^1.1.1",
+    "urban-dictionary": "^3.0.0",
     "video-converter": "^1.0.0",
     "video-url-link": "git+https://github.com/YogaSakti/video-url-link.git",
     "wolfram-alpha-api": "https://products.wolframalpha.com/api/libraries/javascript/wolfram-alpha-api-1.0.0-rc.1.tgz"
