@@ -179,7 +179,7 @@ module.exports = msgHandler = async (client, message) => {
             case 'help':
             case 'commands':
                 if (arg == '#help ' || arg == '#help') {
-                    await client.reply(from, 'Hello. This is a bot that does cool things for Whatsapp.\n Avialable commands: ping, help, sticker, fakesticker, contactsticker, botstat, wolf, mj, black, toggle, compile, fps.\n send "#help [command]" for command info. \n \n github: https://github.com/Lainad27/imageToSticker', id);
+                    await client.reply(from, 'Hello. This is a bot that does cool things for Whatsapp.\n Avialable commands: ping, help, sticker, fakesticker, contactsticker, botstat, wolf, mj, black, toggle, compile, fps, ud, udpic, udrand, udpicrand, udwotd, udpicwotd.\n send "#help [command]" for command info. \n \n github: https://github.com/Lainad27/imageToSticker', id);
                 }
                 else {
                     switch (arg) {
