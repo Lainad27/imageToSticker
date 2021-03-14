@@ -35,7 +35,7 @@ const waApi = WolframAlphaAPI('KEY');
 var mjAPI = require("mathjax-node");
 var sizeOf = require('image-size');
 const { encode } = require('html-entities');
-
+const fetch = require('node-fetch');
 var text = fs.readFileSync("black.txt").toString()
 var textByLine = text.split("\n")
 var black = textByLine
@@ -179,7 +179,7 @@ module.exports = msgHandler = async (client, message) => {
             case 'help':
             case 'commands':
                 if (arg == '#help ' || arg == '#help') {
-                    await client.reply(from, 'Hello. This is a bot that does cool things for Whatsapp.\n Avialable commands: ping, help, sticker, fakesticker, contactsticker, botstat, wolf, mj, black, toggle, compile, fps, ud, udpic, udrand, udpicrand, udwotd, udpicwotd.\n send "#help [command]" for command info. \n \n github: https://github.com/Lainad27/imageToSticker', id);
+                    await client.reply(from, 'Hello. This is a bot that does cool things for Whatsapp.\n Avialable commands: ping, help, sticker, fakesticker, contactsticker, botstat, wolf, mj, black, toggle, compile, fps, ud, udrand, udwotd, udpic, udpicrand, udpicwotd, covid.\n send "#help [command]" for command info. \n \n github: https://github.com/Lainad27/imageToSticker', id);
                 }
                 else {
                     switch (arg) {
@@ -255,6 +255,9 @@ module.exports = msgHandler = async (client, message) => {
                             case 'urbanpicwotd':
                             case 'urbandictionarypicwotd':
                                 client.reply(from, 'send #udwotd to define the word of the day with urbandictionry.com . will reply an image. aliases: udpicwotd, urbanpicwotd, urbandictionarypicwotd.', id)
+                                break
+                            case 'covid':
+                                client.reply(from, 'send #covid [city] to get information about coronavirus in that city. aliases: covid.', id)
                                 break
                             default:
                             client.reply(from, `that's not a command.`, id)
@@ -1866,6 +1869,78 @@ module.exports = msgHandler = async (client, message) => {
                                     client.reply(from,`${error.message}` , message.id);
                                   })
                                   break
+            case 'covid':
+                if(arg == "#covid " || arg == "#covid") {
+                    client.reply(message.chatId, "צריך לכתוב משהו אחרי הפקודה", message.id);
+                    return;
+                }
+    
+                var raw = JSON.stringify({"requests":[{"id":"0","queryName":"spotlightPublic","single":false,"parameters":{}},{"id":"1","parameters":{},"queryName":"lastUpdate","single":true}]});
+                
+                var requestOptions = {
+                  method: 'POST',
+                  headers: {
+                    "Content-Type": "application/json"
+                  },
+                  body: raw,
+                  redirect: 'follow'
+                };
+    
+                const coronaEndpoint = 'https://datadashboardapi.health.gov.il/api/queries/_batch';
+    
+                let rawData = await fetch(coronaEndpoint, requestOptions);
+                let data = await rawData.json();
+    
+                console.log(data);
+    
+    
+                let found = data[0].data.filter(city => city.name.includes(arg))
+    
+                if(found.length == 0) {
+                    client.reply(message.chatId, "שמעו שאני לא מכיר עיר בשם הזה", message.id);
+                    return;
+                }
+    
+                if(found.length == 1) {
+                    let city = found[0];
+    
+                    let date = new Date(Date.parse(city.date));
+    
+                    const bold = (text) => `*${text}*`;
+                    const italic = (text) => `_${text}_`;
+    
+                    const newline = "\n"
+    
+                    let response =  bold(`מצב הקורונה ב${city.name}`) + newline;
+    
+                    const colors = {
+                        "ירוק": "💚",
+                        "צהוב": "🟡",
+                        "כתום": "🍊",
+                        "אדום ": "😡"
+                    }
+    
+                    response += "ציון קורונה: " + city.score + newline;
+                    response += "צבע קורונה ממשלתי:" + colors[city.governmentColor] + city.governmentColor + newline;
+                    response += "צבע קורונה:" + colors[city.color] + city.color + newline + newline;
+                    response += "חולים ל10,000 איש: " + city.sickTo10000 + newline;
+    
+                    response += "חולים פעילים ל1000 איש: " + city.activeSickTo1000 + newline;
+                    response += "חולים פעילים: " + city.activeSick + newline + newline;
+                    response += "מחוסנים ראשון: " + city.firstDose.toFixed(2) + "%"+ newline;
+                    response += "מחוסנים שני: " + city.secondDose.toFixed(2) + "%"+ newline + italic("(מכלל האוכלוסיה)") + newline + newline;
+                    response += "אחוז הבדיקות החיוביות: " + (city.positiveTests * 100).toFixed(2) + "%" + newline;
+    
+    
+                    response += newline;
+                    response += italic("מעודכן לתאריך " + date.toDateString());
+    
+                    client.reply(message.chatId, response, message.id);
+                } else {
+    
+                    client.reply(message.chatId, "יש את זה בפחות ספציפי?", message.id);
+                }
+            break
             case 'split':
                 var num = parseInt(arg)
                 if (num>3 || num<1){
