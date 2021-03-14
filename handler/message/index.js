@@ -1773,9 +1773,11 @@ module.exports = msgHandler = async (client, message) => {
                         const page = await browser.newPage();
                         await page.goto(results[0]['permalink']);
                         await page.evaluate(() => {
-                            let example = document.querySelector('#content > div:nth-child(1) > a');
+                            if (document.querySelector('#content > div:nth-child(1) > a')){
+                                let example = document.querySelector('#content > div:nth-child(1) > a');
                           
-                            example.parentNode.removeChild(example);
+                                example.parentNode.removeChild(example);
+                            }
                           });                          
                         await page.waitForSelector('#content > div:nth-child(1)');          // wait for the selector to load
                         const element1 = await page.$('#content > div:nth-child(1)');
@@ -1805,9 +1807,11 @@ module.exports = msgHandler = async (client, message) => {
                                 const page = await browser.newPage();
                                 await page.goto(results[0]['permalink']);
                                 await page.evaluate(() => {
-                                    let example = document.querySelector('#content > div:nth-child(1) > a');
+                                    if (document.querySelector('#content > div:nth-child(1) > a')){
+                                        let example = document.querySelector('#content > div:nth-child(1) > a');
                                   
-                                    example.parentNode.removeChild(example);
+                                        example.parentNode.removeChild(example);
+                                    }
                                   });                          
                                 await page.waitForSelector('#content > div:nth-child(1)');          // wait for the selector to load
                                 const element1 = await page.$('#content > div:nth-child(1)');
@@ -1838,8 +1842,11 @@ module.exports = msgHandler = async (client, message) => {
                                         await page.goto(results[0]['permalink']);
                                         await page.evaluate(() => {
                                             let example = document.querySelector('#content > div:nth-child(1) > a');
+                                            if (document.querySelector('#content > div:nth-child(1) > a')){
+                                                let example = document.querySelector('#content > div:nth-child(1) > a');
                                           
-                                            example.parentNode.removeChild(example);
+                                                example.parentNode.removeChild(example);
+                                            }
                                           });                          
                                         await page.waitForSelector('#content > div:nth-child(1)');          // wait for the selector to load
                                         const element1 = await page.$('#content > div:nth-child(1)');
