@@ -36,7 +36,6 @@ Clone this project
 Install the dependencies:
 
 ```bash
-> npm install sharp
 > npm install --no-audit
 > npm start
 ```
