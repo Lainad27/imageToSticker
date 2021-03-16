@@ -217,60 +217,7 @@ module.exports = msgHandler = async (client, message) => {
         const uaOverride = process.env.UserAgent
         var pres_bud = message.content
 
-        if (isMedia) { pres_bud = caption }
-
-        if (enabled.includes(true) && !black.includes(message.author) && (!msgFilter.isFiltered2(message.author) || message.fromMe)) {
-            if (enabled[0] && message.chatId == '972584080120-1591728975@g.us' && (pres_bud.startsWith('adverguy') || pres_bud.includes('נטפליקס'))) {
-                try {
-                    if (!message.fromMe) { msgFilter.addFilter2(message.author) }
-                    await client.sendTextWithMentions(message.chatId, fs.readFileSync('Rajwanmsg.txt', 'utf8'), message.id);
-                    await client.sendImageAsSticker(message.chatId, fs.readFileSync('Rajwan.txt', 'utf8'));
-                } catch (error) {
-                    console.error(error)
-                }
-            }
-            if (enabled[1] && pres_bud.includes('צבאן') && message.chatId == '972584080120-1591728975@g.us') {
-                try {
-                    if (!message.fromMe) { msgFilter.addFilter2(message.author) }
-                    await client.sendImageAsSticker(message.chatId, fs.readFileSync('tsaban.txt', 'utf8'));
-                } catch (error) {
-                    console.error(error)
-                }
-            }
-            if (enabled[2] && (message.author == '972544883303@c.us' || message.fromMe) && pres_bud.startsWith('changestr ')) {
-                try {
-                    fs.writeFileSync('Rajwanmsg.txt', pres_bud.substring(10));
-                    await client.reply(message.chatId, 'message changed to \n' + fs.readFileSync('Rajwanmsg.txt', 'utf8'), message.id);
-                } catch (error) {
-                    console.error(error)
-                }
-            }
-
-            if (enabled[3] && message.chatId == '972584080120-1591728975@g.us' && pres_bud.includes('2') && (!message.fromMe) && !isMedia) {
-                if (!message.fromMe) { msgFilter.addFilter2(message.author) }
-                await client.sendFile(message.chatId, '2.pdf', 'חחחחחחחח אמרת 2 איזה מצחיק אני.pdf', 'חחחחחחחח אמרת 2 איזה מצחיק אני', message.id);
-            }
-            if (enabled[4] && message.chatId == '972584080120-1591728975@g.us' && pres_bud.includes('6') && (!message.fromMe) && !isMedia) {
-                try {
-                    if (!message.fromMe) { msgFilter.addFilter2(message.author) }
-                    await client.sendFile(message.chatId, '6.pdf', 'חחחחחחחח אמרת 6 איזה מצחיק אני.pdf', 'חחחחחחחח אמרת 6 איזה מצחיק אני', message.id);
-                } catch (error) {
-                    console.error(error)
-                }
-            }
-            if (enabled[5] && pres_bud.includes('@someone') && (message.chatId == '972584080120-1591728975@g.us' || message.chatId == '972529582259-1546592840@g.us' || message.chatId == '972502322006-1572297593@g.us' || message.chatId == '972542562458-1606512356@g.us')) {
-                try {
-                    if (!message.fromMe) { msgFilter.addFilter2(message.author) }
-                    /*
-                      client.getAllMessagesInChat(message.chatId).then(async function (alls) {
-                      await client.sendTextWithMentions(message.chatId, "@" + alls[Math.floor(Math.random() * alls.length)].author.substring(0,12), message.id);
-                    })*/
-                    if (!(message.fromMe && body.includes('output'))) {await client.sendTextWithMentions(message.chatId, "@" + message.chat.groupMetadata.participants[parseInt(Math.random() * message.chat.groupMetadata.participants.length)].id.substring(0,12), message.id);}
-                } catch (error) {
-                    console.error(error)
-                }
-            }
-        }
+        if (isMedia) { pres_bud = caption}
         // [BETA] Avoid Spam Message
         if (isCmd && msgFilter.isFiltered(message.author) && !isGroupMsg) { return console.log(color('[SPAM]', 'red'), color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'yellow'), color(`${command} [${args.length}]`), 'from', color(pushname)) }
         if (isCmd && !isGroupMsg && !message.chat.contact.isMyContact) { return console.log(color('[WHY]', 'orange'), color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'yellow'), color(`${command} [${args.length}]`), 'from', color(pushname)) }
