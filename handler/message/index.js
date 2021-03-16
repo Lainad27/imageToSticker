@@ -47,7 +47,6 @@ const { stream } = require('file-type')
 const { FONT_SANS_64_BLACK } = require('jimp')
 const { umask, stdout } = require('process')
 var ValidColors = ['aliceblue', 'antiquewhite', 'aqua', 'aquamarine', 'azure', 'beige', 'bisque', 'black', 'blanchedalmond', 'blue', 'blueviolet', 'brown', 'burlywood', 'cadetblue', 'chartreuse', 'chocolate', 'coral', 'cornflowerblue', 'cornsilk', 'crimson', 'cyan', 'darkblue', 'darkcyan', 'darkgoldenrod', 'darkgray', 'darkgrey', 'darkgreen', 'darkkhaki', 'darkmagenta', 'darkolivegreen', 'darkorange', 'darkorchid', 'darkred', 'darksalmon', 'darkseagreen', 'darkslateblue', 'darkslategray', 'darkslategrey', 'darkturquoise', 'darkviolet', 'deeppink', 'deepskyblue', 'dimgray', 'dimgrey', 'dodgerblue', 'firebrick', 'floralwhite', 'forestgreen', 'fuchsia', 'gainsboro', 'ghostwhite', 'gold', 'goldenrod', 'gray', 'grey', 'green', 'greenyellow', 'honeydew', 'hotpink', 'indianred', 'indigo', 'ivory', 'khaki', 'lavender', 'lavenderblush', 'lawngreen', 'lemonchiffon', 'lightblue', 'lightcoral', 'lightcyan', 'lightgoldenrodyellow', 'lightgray', 'lightgrey', 'lightgreen', 'lightpink', 'lightsalmon', 'lightseagreen', 'lightskyblue', 'lightslategray', 'lightslategrey', 'lightsteelblue', 'lightyellow', 'lime', 'limegreen', 'linen', 'magenta', 'maroon', 'mediumaquamarine', 'mediumblue', 'mediumorchid', 'mediumpurple', 'mediumseagreen', 'mediumslateblue', 'mediumspringgreen', 'mediumturquoise', 'mediumvioletred', 'midnightblue', 'mintcream', 'mistyrose', 'moccasin', 'navajowhite', 'navy', 'oldlace', 'olive', 'olivedrab', 'orange', 'orangered', 'orchid', 'palegoldenrod', 'palegreen', 'paleturquoise', 'palevioletred', 'papayawhip', 'peachpuff', 'peru', 'pink', 'plum', 'powderblue', 'purple', 'rebeccapurple', 'red', 'rosybrown', 'royalblue', 'saddlebrown', 'salmon', 'sandybrown', 'seagreen', 'seashell', 'sienna', 'silver', 'skyblue', 'slateblue', 'slategray', 'slategrey', 'snow', 'springgreen', 'steelblue', 'tan', 'teal', 'thistle', 'tomato', 'turquoise', 'violet', 'wheat', 'white', 'whitesmoke', 'yellow', 'yellowgreen']
-
 function draw(img, ctx) {
     var buffer = createCanvas(512, 512)
     var bufferctx = buffer.getContext('2d');
@@ -123,11 +122,77 @@ function trimCanvas(c) {
 }
 
 
+// Written by Yoav Carmel:
+function convertNameToDigits(name) {
+    return name.replace(/\D+/g, '');
+}
+
+function generateWhatsAppLine(name, messageCount) {
+    return "@" + name + " , count: " + String(messageCount) + "\n";
+}
+
+function removeSideChars(s) {
+    return s.replace("\n", "").replace("\u200f\u202a", "").replace("\u202c\u200f", "").trim();
+}
 
 
+function getParticipantsAndDataFromFile(fileText) {
+    let participants = {};
+    let lines = fileText.split("\n");
+    let regex =  /^\[?(\d{1,2}\.\d{1,2}\.\d{2,4}|\d{1,2}\/\d{1,2}\/\d{2,4}), \d{1,2}:\d{1,2}(:\d{1,2})? (AM|PM|)?\]?/g;
+    for (let line of lines) {
+        if (line.search(regex) === 0) {
+            if (line.includes("-") && line.substr(line.indexOf("-") + 1).includes(":")) {
+                let name = line.substr(line.indexOf("-") + 1);
+                name = name.substring(0, name.indexOf(":"));
+                name = removeSideChars(name);
+                let converted = convertNameToDigits(name);
+                if (converted !== "") {
+                    name = converted;
+                }
+                if (name in participants) {
+                    participants[name]++;
+                } else {
+                    participants[name] = 1;
+                }
+            }
+        }
+    }
+    return participants;
+}
+
+
+function getDataAsPersonsArray(participantsDict) {
+    let data = [];
+    for (let name in participantsDict) {
+        data.push([parseInt(participantsDict[name]), name])
+    }
+    return data;
+}
+
+function getSorted(data) {
+    var sortedArray = data.sort(function(a, b) { return parseInt(a) - parseInt(b); });
+
+    return sortedArray.reverse();
+}
+
+function generateTagsMessages(listOfPersons) {
+    let s = "";
+    for (let per of listOfPersons) {
+        s += generateWhatsAppLine(per[1], per[0]);
+    }
+    return s;
+}
+
+function yoavCarmel(fileText) {
+    let dataObj = getParticipantsAndDataFromFile(fileText);
+    let dataList = getSorted(getDataAsPersonsArray(dataObj));
+    let dataString = generateTagsMessages(dataList);
+    return dataString;
+}
+// Written by Yoav Carmel.
 
 module.exports = msgHandler = async (client, message) => {
-
     const { type, id, from, t, sender, isGroupMsg, chat, caption, isMedia, isGif, mimetype, quotedMsg, quotedMsgObj, mentionedJidList } = message
     let { body } = message
     const { name, formattedTitle } = chat
@@ -150,17 +215,67 @@ module.exports = msgHandler = async (client, message) => {
         const isQuotedImage = quotedMsg && quotedMsg.type === 'image'
         const url = args.length !== 0 ? args[0] : ''
         const uaOverride = process.env.UserAgent
-
         var pres_bud = message.content
-
 
         if (isMedia) { pres_bud = caption }
 
-        
+        if (enabled.includes(true) && !black.includes(message.author) && (!msgFilter.isFiltered2(message.author) || message.fromMe)) {
+            if (enabled[0] && message.chatId == '972584080120-1591728975@g.us' && (pres_bud.startsWith('adverguy') || pres_bud.includes('נטפליקס'))) {
+                try {
+                    if (!message.fromMe) { msgFilter.addFilter2(message.author) }
+                    await client.sendTextWithMentions(message.chatId, fs.readFileSync('Rajwanmsg.txt', 'utf8'), message.id);
+                    await client.sendImageAsSticker(message.chatId, fs.readFileSync('Rajwan.txt', 'utf8'));
+                } catch (error) {
+                    console.error(error)
+                }
+            }
+            if (enabled[1] && pres_bud.includes('צבאן') && message.chatId == '972584080120-1591728975@g.us') {
+                try {
+                    if (!message.fromMe) { msgFilter.addFilter2(message.author) }
+                    await client.sendImageAsSticker(message.chatId, fs.readFileSync('tsaban.txt', 'utf8'));
+                } catch (error) {
+                    console.error(error)
+                }
+            }
+            if (enabled[2] && (message.author == '972544883303@c.us' || message.fromMe) && pres_bud.startsWith('changestr ')) {
+                try {
+                    fs.writeFileSync('Rajwanmsg.txt', pres_bud.substring(10));
+                    await client.reply(message.chatId, 'message changed to \n' + fs.readFileSync('Rajwanmsg.txt', 'utf8'), message.id);
+                } catch (error) {
+                    console.error(error)
+                }
+            }
+
+            if (enabled[3] && message.chatId == '972584080120-1591728975@g.us' && pres_bud.includes('2') && (!message.fromMe) && !isMedia) {
+                if (!message.fromMe) { msgFilter.addFilter2(message.author) }
+                await client.sendFile(message.chatId, '2.pdf', 'חחחחחחחח אמרת 2 איזה מצחיק אני.pdf', 'חחחחחחחח אמרת 2 איזה מצחיק אני', message.id);
+            }
+            if (enabled[4] && message.chatId == '972584080120-1591728975@g.us' && pres_bud.includes('6') && (!message.fromMe) && !isMedia) {
+                try {
+                    if (!message.fromMe) { msgFilter.addFilter2(message.author) }
+                    await client.sendFile(message.chatId, '6.pdf', 'חחחחחחחח אמרת 6 איזה מצחיק אני.pdf', 'חחחחחחחח אמרת 6 איזה מצחיק אני', message.id);
+                } catch (error) {
+                    console.error(error)
+                }
+            }
+            if (enabled[5] && pres_bud.includes('@someone') && (message.chatId == '972584080120-1591728975@g.us' || message.chatId == '972529582259-1546592840@g.us' || message.chatId == '972502322006-1572297593@g.us' || message.chatId == '972542562458-1606512356@g.us')) {
+                try {
+                    if (!message.fromMe) { msgFilter.addFilter2(message.author) }
+                    /*
+                      client.getAllMessagesInChat(message.chatId).then(async function (alls) {
+                      await client.sendTextWithMentions(message.chatId, "@" + alls[Math.floor(Math.random() * alls.length)].author.substring(0,12), message.id);
+                    })*/
+                    if (!(message.fromMe && body.includes('output'))) {await client.sendTextWithMentions(message.chatId, "@" + message.chat.groupMetadata.participants[parseInt(Math.random() * message.chat.groupMetadata.participants.length)].id.substring(0,12), message.id);}
+                } catch (error) {
+                    console.error(error)
+                }
+            }
+        }
         // [BETA] Avoid Spam Message
-        if (isCmd && msgFilter.isFiltered(from) && !isGroupMsg) { return console.log(color('[SPAM]', 'red'), color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'yellow'), color(`${command} [${args.length}]`), 'from', color(pushname)) }
+        if (isCmd && msgFilter.isFiltered(message.author) && !isGroupMsg) { return console.log(color('[SPAM]', 'red'), color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'yellow'), color(`${command} [${args.length}]`), 'from', color(pushname)) }
         if (isCmd && !isGroupMsg && !message.chat.contact.isMyContact) { return console.log(color('[WHY]', 'orange'), color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'yellow'), color(`${command} [${args.length}]`), 'from', color(pushname)) }
-        if (isCmd && msgFilter.isFiltered(from) && isGroupMsg) { return console.log(color('[SPAM]', 'red'), color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'yellow'), color(`${command} [${args.length}]`), 'from', color(pushname), 'in', color(name || formattedTitle)) }
+        // if (isCmd && isGroupMsg && (message.chat.groupMetadata.creation>1600000000)) {  return console.log(color('[WHY]', 'orange'), color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'yellow'), color(`${command} [${args.length}]`), 'from', color(pushname)) }
+        if (isCmd && msgFilter.isFiltered(message.author) && isGroupMsg) { return console.log(color('[SPAM]', 'red'), color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'yellow'), color(`${command} [${args.length}]`), 'from', color(pushname), 'in', color(name || formattedTitle)) }
         //
         if (!isCmd && !isGroupMsg) { return console.log('[RECV]', color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'yellow'), 'Message from', color(pushname)) }
         if (!isCmd && isGroupMsg) { return console.log('[RECV]', color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'yellow'), 'Message from', color(pushname), 'in', color(name || formattedTitle)) }
@@ -179,7 +294,7 @@ module.exports = msgHandler = async (client, message) => {
             case 'help':
             case 'commands':
                 if (arg == '#help ' || arg == '#help') {
-                    await client.reply(from, 'Hello. This is a bot that does cool things for Whatsapp.\n Avialable commands: ping, help, sticker, fakesticker, contactsticker, botstat, wolf, mj, black, toggle, compile, fps, ud, udrand, udwotd, udpic, udpicrand, udpicwotd, covid.\n send "#help [command]" for command info. \n \n github: https://github.com/Lainad27/imageToSticker', id);
+                    await client.reply(from, 'Hello. This is a bot that does cool things for Whatsapp.\n Avialable commands: ping, help, sticker, fakesticker, contactsticker, botstat, wolf, mj, black, toggle, compile, fps, ud, udrand, udwotd, udpic, udpicrand, udpicwotd, covid, an.\n send "#help [command]" for command info. \n \n github: https://github.com/Lainad27/imageToSticker', id);
                 }
                 else {
                     switch (arg) {
@@ -257,7 +372,11 @@ module.exports = msgHandler = async (client, message) => {
                                 client.reply(from, 'send #udwotd to define the word of the day with urbandictionry.com . will reply an image. aliases: udpicwotd, urbanpicwotd, urbandictionarypicwotd.', id)
                                 break
                             case 'covid':
-                                client.reply(from, 'send #covid [city] to get information about coronavirus in that city. aliases: covid.', id)
+                                client.reply(from, 'send #covid [עיר] to get information about coronavirus in that city. aliases: covid.', id)
+                                break
+                            case 'anal':
+                            case 'an':
+                                client.reply(from, 'reply #an to a txt chat export to analyze it and rank who sen the most messages. aliases: an.', id)
                                 break
                             default:
                             client.reply(from, `that's not a command.`, id)
@@ -1586,6 +1705,21 @@ module.exports = msgHandler = async (client, message) => {
                         await client.reply(message.chatId, "its only for me and mods dummy", message.id);
                     }
                     break
+                case 'anal':
+                case 'an': // by Yoav Carmel :)
+                if (quotedMsg){
+                    const encryptMedia = quotedMsg;
+                    const mediaData = await decryptMedia(encryptMedia, uaOverride);
+                    var analysis = yoavCarmel(mediaData.toString());
+                    if (message.fromMe || (isGroupAdmins)) {
+                        await client.sendTextWithMentions(message.chatId, analysis, message.id);
+                    }
+                    else{
+                        await client.reply(message.chatId, analysis, message.id);
+                    }
+                }
+                    
+                break
             /*
         case 'emoji':
             console.log(message.body)
@@ -1660,7 +1794,7 @@ module.exports = msgHandler = async (client, message) => {
                             return console.error('upload failed:', err);
                         }
                         if (body.program_error){client.reply(message.chatId, "error: \n" + body.program_error, message.id);}
-                        else if (!body.program_output){client.reply(message.chatId, "stop trying to trick the system it won't work", message.id);}
+                        else if (!body.program_output){client.reply(message.chatId, "no output no error bro", message.id);}
                         else if (body.program_output.includes('@someone')) {client.reply(message.chatId, "no tricks my dude" , message.id);}
                         else{client.reply(message.chatId, "output: \n" + body.program_output, message.id);}
                         
