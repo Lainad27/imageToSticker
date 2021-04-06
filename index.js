@@ -49,7 +49,7 @@ const start = (client = new Client()) => {
 
 const options = {
     sessionId: 'Imperial',
-    headless: false,
+    headless: true,
     qrTimeout: 0,
     authTimeout: 0,
     restartOnCrash: start,
