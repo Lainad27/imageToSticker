@@ -34,3 +34,4 @@ lib/*.json
 lib/instaStory.js
 lib/jiwa.js
 utils/anu.js
+node_modules/

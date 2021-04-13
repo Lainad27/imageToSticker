@@ -220,14 +220,13 @@ module.exports = msgHandler = async (client, message) => {
         if (isMedia) { pres_bud = caption}
         // [BETA] Avoid Spam Message
         if (isCmd && msgFilter.isFiltered(message.author) && !isGroupMsg) { return console.log(color('[SPAM]', 'red'), color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'yellow'), color(`${command} [${args.length}]`), 'from', color(pushname)) }
-        if (isCmd && !isGroupMsg && !message.chat.contact.isMyContact) { return console.log(color('[WHY]', 'orange'), color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'yellow'), color(`${command} [${args.length}]`), 'from', color(pushname)) }
-        // if (isCmd && isGroupMsg && (message.chat.groupMetadata.creation>1600000000)) {  return console.log(color('[WHY]', 'orange'), color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'yellow'), color(`${command} [${args.length}]`), 'from', color(pushname)) }
-        if (isCmd && msgFilter.isFiltered(message.author) && isGroupMsg) { return console.log(color('[SPAM]', 'red'), color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'yellow'), color(`${command} [${args.length}]`), 'from', color(pushname), 'in', color(name || formattedTitle)) }
-        //
-        if (!isCmd && !isGroupMsg) { return console.log('[RECV]', color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'yellow'), 'Message from', color(pushname)) }
-        if (!isCmd && isGroupMsg) { return console.log('[RECV]', color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'yellow'), 'Message from', color(pushname), 'in', color(name || formattedTitle)) }
-        if (isCmd && !isGroupMsg) { console.log(color('[EXEC]'), color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'yellow'), color(`${command} [${args.length}]`), 'from', color(pushname)) }
-        if (isCmd && isGroupMsg) { console.log(color('[EXEC]'), color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'yellow'), color(`${command} [${args.length}]`), 'from', color(pushname), 'in', color(name || formattedTitle)) }
+        //if (isCmd && !isGroupMsg && !message.chat.contact.isMyContact) { return console.log(color('[WHY]', 'orange'), color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'yellow'), color(`${command} [${args.length}]`), 'from', color(pushname)) }
+         //if (isCmd && isGroupMsg && (message.chat.groupMetadata.creation>1600000000)) {  return console.log(color('[WHY]', 'orange'), color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'yellow'), color(`${command} [${args.length}]`), 'from', color(pushname)) }
+        if (isCmd && msgFilter.isFiltered(message.author) && isGroupMsg && command != 'help') { return console.log(color('[SPAM]', 'red'), color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'yellow'), color(`${command} [${args.length}]`), 'from', color(pushname), 'in', color(name || formattedTitle)) }
+        if (!isCmd && !isGroupMsg) { return;}
+        if (!isCmd && isGroupMsg) { return;}
+        //if (isCmd && !isGroupMsg) { return;}
+        //if (isCmd && isGroupMsg) { console.log(color('[EXEC]'), color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'yellow'), color(`${command} [${args.length}]`), 'from', color(pushname), 'in', color(name || formattedTitle)) }
         // [BETA] Avoid Spam Message
         msgFilter.addFilter(message.author)
 
@@ -241,7 +240,7 @@ module.exports = msgHandler = async (client, message) => {
             case 'help':
             case 'commands':
                 if (arg == '#help ' || arg == '#help') {
-                    await client.reply(from, 'Hello. This is a bot that does cool things for Whatsapp.\n Avialable commands: ping, help, sticker, fakesticker, contactsticker, botstat, wolf, mj, black, toggle, compile, fps, ud, udrand, udwotd, udpic, udpicrand, udpicwotd, covid, an.\n send "#help [command]" for command info. \n \n github: https://github.com/Lainad27/imageToSticker', id);
+                    await client.reply(from, 'Hello. This bot does cool things for Whatsapp. \nTo use a command start a message with #[command name] \nAvialable commands: \n ping - check ping \n help \n sticker - sticker from image \n fps - sticker from video/gif \n fakesticker, contactsticker - stickers of messages \n botstat \n wolf - wolfram alpha \n mj - compile mathjax \n compile - compile code \n ud, udrand, udwotd, udpic, udpicrand, udpicwotd - uses urbandictionary.com \n covid - בדקו מצב קורונה בעיר בעברית \n an - analyze group. \n*send "#help [command]" for command info.* \ngithub: https://github.com/Lainad27/imageToSticker', id);
                 }
                 else {
                     switch (arg) {
@@ -260,38 +259,38 @@ module.exports = msgHandler = async (client, message) => {
                         case 'sticker2':
                         case 's2':
                         case 'stiker2':
-                            client.reply(from, 'reply to image or send image with: #s [color] [outline] expand[if you want to expand] top text|bottom text. aliases: sticker,s,stiker,sticker2,stiker,s2.', id)
+                            client.reply(from, 'reply to image or send image with: #s [color] [outline] expand[if you want to expand] top text|bottom text. aliases: sticker,s,stiker,sticker2,stiker,s2. \n Example: \n #s white red צעירים להיות כמו|חחחח', id)
                             break
                         case 'fakesticker':
                         case 'fs':
-                            client.reply(from, 'fake a sticker image with #fs [time] | [message] | [name] | [phone number]. Or, you can reply to a message: #fs for a real sticker. will work with images that are sent with the message or quoted. aliases: fakesticker,fs.', id)
+                            client.reply(from, 'fake a sticker image with #fs [time] | [message] | [name] | [phone number]. Or, you can reply to a message: #fs for a real sticker. will work with images that are sent with the message or quoted. aliases: fakesticker,fs. \n Example: \n replying to a message with #fs', id)
                             break
                         case 'contactsticker':
                         case 'cs':
-                            client.reply(from, 'fake a sticker with contact with #cs [time] | [message] | [contact name]. Or, you can reply to a message: #cs [contact name] for a real sticker. will work with images that are sent with the message or quoted. aliases: contactsticker,cs.', id)
+                            client.reply(from, 'fake a sticker with contact with #cs [time] | [message] | [contact name]. Or, you can reply to a message: #cs [contact name] for a real sticker. will work with images that are sent with the message or quoted. aliases: contactsticker,cs. \n Example: \n replying to a message with #cs Andrew', id)
                             break
                         case 'botstat':
                             client.reply(from, 'stats about this bot. aliases: botstat.', id)
                             break
                         case 'wolf':
-                            client.reply(from, 'search in wolfram alpha with #wolf [what you want to search]. aliases: wolf.', id)
+                            client.reply(from, 'search in wolfram alpha with #wolf [what you want to search]. aliases: wolf. \n Example: \n #wolf integrate x^4 from 0 to 1', id)
                             break
                         case 'mj':
-                            client.reply(from, 'complie message to mathjax with #mj [what you want to complie]. aliases: mj.', id)
+                            client.reply(from, 'complie message to mathjax with #mj [what you want to complie]. aliases: mj. \n Example: \n #mj \\sum n = \\frac{n*(n+1)}{2}', id)
                             break
                         case 'toggle':
                             client.reply(from, 'for shana Aleph mods and me. #toggle [list of 0 and 1, e.g: 1,0,1,1,1,0]. to enable [netflix, tsaban, changestr, 2,6, at-someone]. if there is no argument, then if there is anything enabled #toggle will disable all, else #toggle will enable all. aliases: toggle.', id)
                             break
                             case 'compile':
-                                client.reply(from, 'compile and run code with #compile [lang] [code]. available langs: ```"bash": "bash", "c": "gcc-head-c","c#": "dotnetcore-head", "coffeescript": "coffeescript-head", "cpp": "gcc-head", "elixir": "elixir-head", "go": "go-head", "java": "openjdk-head", "javascript": "nodejs-head", "lua": "lua-5.3.4", "perl": "perl-head", "php": "php-head", "python": "cpython-3.8.0", "ruby": "ruby-head", "rust": "rust-head", "sql": "sqlite-head", "swift": "swift-5.0.1", "typescript": "typescript-3.5.1", "vim-script": "vim-head", ``` .aliases: compile.', id)
+                                client.reply(from, 'compile and run code with #compile [lang] [code]. available langs: ```"bash": "bash", "c": "gcc-head-c","c#": "dotnetcore-head", "coffeescript": "coffeescript-head", "cpp": "gcc-head", "elixir": "elixir-head", "go": "go-head", "java": "openjdk-head", "javascript": "nodejs-head", "lua": "lua-5.3.4", "perl": "perl-head", "php": "php-head", "python": "cpython-3.8.0", "ruby": "ruby-head", "rust": "rust-head", "sql": "sqlite-head", "swift": "swift-5.0.1", "typescript": "typescript-3.5.1", "vim-script": "vim-head", ``` .aliases: compile. \n Example: \n #compile python print("Hello world!")', id)
                                 break
                             case 'fps':
-                                client.reply(from, 'reply to a video or send video with: #fps [color] [shadow] expand[if you want to expand] top text|bottom text. aliases: fps.', id)
+                                client.reply(from, 'reply to a video or send video with: #fps [color] [shadow] expand[if you want to expand] top text|bottom text. aliases: fps. \n Example: \n #fps white red יהודים להיות כמו|amirite boys??', id)
                                 break
                             case 'ud':
                             case 'urban':
                             case 'urbandictionary':
-                                client.reply(from, 'send #ud [phrase/word] to define it using urbandictionry.com . will reply text. aliases: ud, urban, urbandictionary.', id)
+                                client.reply(from, 'send #ud [phrase/word] to define it using urbandictionry.com . will reply text. aliases: ud, urban, urbandictionary. \n Example: \n #ud Erika', id)
                                 break
                             case 'udrand':
                             case 'urbanrand':
@@ -306,7 +305,7 @@ module.exports = msgHandler = async (client, message) => {
                             case 'udpic':
                             case 'urbanpic':
                             case 'urbandictionarypic':
-                                client.reply(from, 'send #udpic [phrase/word] to define it using urbandictionry.com . will reply an image. aliases: udpic, urbanpic, urbandictionarypic.', id)
+                                client.reply(from, 'send #udpic [phrase/word] to define it using urbandictionry.com . will reply an image. aliases: udpic, urbanpic, urbandictionarypic. \n Example: \n #udpic Erika', id)
                                 break
                             case 'udpicrand':
                             case 'urbanpicrand':
@@ -319,7 +318,7 @@ module.exports = msgHandler = async (client, message) => {
                                 client.reply(from, 'send #udwotd to define the word of the day with urbandictionry.com . will reply an image. aliases: udpicwotd, urbanpicwotd, urbandictionarypicwotd.', id)
                                 break
                             case 'covid':
-                                client.reply(from, 'send #covid [עיר] to get information about coronavirus in that city. aliases: covid.', id)
+                                client.reply(from, 'send #covid [עיר] to get information about coronavirus in that city. aliases: covid.\n Example: \n #covid הוד השרון', id)
                                 break
                             case 'anal':
                             case 'an':
@@ -385,14 +384,14 @@ module.exports = msgHandler = async (client, message) => {
             }
             */
            case 'fps': {
-            if (((isMedia && (mimetype === 'video/mp4' && message.duration < 60 || mimetype === 'image/gif' && message.duration < 60)) || !isQuotedImage && (quotedMsg != null) && (quotedMsgObj.mimetype === 'video/mp4' && quotedMsgObj.duration < 60 || quotedMsgObj.mimetype === 'image/gif' && quotedMsgObj.duration < 60)) && args.length<2) {
+            if (((isMedia && (mimetype === 'video/mp4' && message.duration < 60 || mimetype === 'image/gif' && message.duration < 60)) || !isQuotedImage && (quotedMsg != null) && (quotedMsgObj.mimetype === 'video/mp4' && quotedMsgObj.duration < 60 || quotedMsgObj.mimetype === 'image/gif' && quotedMsgObj.duration < 60)) && (args.length==0 || (args.length==1 && args[0].toLowerCase()=='expand'))) {
                 const encryptMedia = (quotedMsg != null) ? quotedMsg : message
                 const mediaData = await decryptMedia(encryptMedia, uaOverride)
                 client.reply(from, 'this will take a while to process.', id)
                 const filename = `./media/input.${encryptMedia.mimetype.split('/')[1]}`
                 fs.writeFileSync(filename, mediaData)
                 var command1 = ffmpeg(filename).fps(30).size('240x?').aspect('1:1');
-                if (args[0] != 'expand') {command1.autopad()}
+                if (!args[0] || args[0].toLowerCase() != 'expand') {command1.autopad()}
                 command1.output('./media/output.webp').on('end', function () {
                     var stats = fs.statSync("./media/output.webp")
                     var fileSizeInBytes = stats.size;
@@ -410,39 +409,47 @@ module.exports = msgHandler = async (client, message) => {
                     }
                 }).run()
             }
-            else if (((isMedia && (mimetype === 'video/mp4' && message.duration < 60 || mimetype === 'image/gif' && message.duration < 60)) || !isQuotedImage && (quotedMsg != null) && (quotedMsgObj.mimetype === 'video/mp4' && quotedMsgObj.duration < 60 || quotedMsgObj.mimetype === 'image/gif' && quotedMsgObj.duration < 60)) && args.length>2) {
+            else if (((isMedia && (mimetype === 'video/mp4' && message.duration < 60 || mimetype === 'image/gif' && message.duration < 60)) || !isQuotedImage && (quotedMsg != null) && (quotedMsgObj.mimetype === 'video/mp4' && quotedMsgObj.duration < 60 || quotedMsgObj.mimetype === 'image/gif' && quotedMsgObj.duration < 60))) {
                 const encryptMedia = (quotedMsg != null) ? quotedMsg : message
                 const mediaData = await decryptMedia(encryptMedia, uaOverride)
                 client.reply(from, 'this will take a while to process.', id)
                 const filename = `./media/input.${encryptMedia.mimetype.split('/')[1]}`
                 fs.writeFileSync(filename, mediaData)
                 var command1 = ffmpeg(filename).fps(30).size('240x?').aspect('1:1');
-                if (args[2].toLowerCase() != 'expand') {command1.autopad()}
-                command1.output('./media/output.mp4').on('end', function () {
-                    var command2 = ffmpeg('./media/output.mp4').size('240x?').aspect('1:1').fps(30);;
-                    if (args[2].toLowerCase() == 'expand') {
-                        var meme = arg.split('expand').slice(1).join(' ')
-                        meme.replace(`'`,``).replace(String.fromCharCode(92),'')
-                        if (!meme.includes('|')) { top = meme }
-                        else { var top = meme.split('|')[0]; var bottom = meme.split('|').slice(1).join(' ') }
-                    }
-                    else {
-                        var meme = args.slice(2).join(' ')
-                        meme.replace(`'`,``).replace(String.fromCharCode(92),'')
-                        if (!meme.includes('|')) { top = meme }
-                        else { var top = meme.split('|')[0]; var bottom = meme.split('|').slice(1).join(' ') }
-
-                    }
+                var expandLocation =0;
+		                    if (ValidColors.includes(args[0].toLowerCase())){
+					                        var mainColor = args[0].toLowerCase();
+					                        expandLocation++;
+					                    }
+		                    else{
+					                        var mainColor = 'white';
+					                    }
+		                    if (ValidColors.includes(args[1].toLowerCase())){
+					                        var shadowColor = args[1].toLowerCase();
+					                        expandLocation++;
+					                    }
+		                    else{
+					                        var shadowColor = 'red';
+					                    }
+		                    if (!args[expandLocation] || args[expandLocation].toLowerCase() != 'expand') {command1.autopad();var textLocation = expandLocation;}
+		    else {
+			    var textLocation = expandLocation+1;
+		    }
+		                    command1.output('./media/output.mp4').on('end', function () {
+					                        var command2 = ffmpeg('./media/output.mp4').size('240x?').aspect('1:1').fps(30);
+									                        var meme = args.slice(textLocation).join(' ')
+									                        if (!meme.includes('|')) { top = meme }
+									                        else { var top = meme.split('|')[0]; var bottom = meme.split('|').slice(1).join(' ') }
                     // break used here:
-                    if (!ValidColors.includes(args[0].toLowerCase()) || !ValidColors.includes(args[1].toLowerCase())){return client.reply(from, 'one of the colors you entered is not valid.  valid input: reply to image or send image with: #' + command + ' [color] [shadow] expand[if you want to expand] top text|bottom text.', id);}
-                    var canvas = createCanvas(240, 240)
+                    //if (!ValidColors.includes(args[0].toLowerCase()) || !ValidColors.includes(args[1].toLowerCase())){return client.reply(from, 'one of the colors you entered is not valid.  valid input: reply to image or send image with: #' + command + ' [color] [shadow] expand[if you want to expand] top text|bottom text.', id);}
+		    var canvas = createCanvas(240, 240)
                     var ctx = canvas.getContext('2d')
                     ctx.font = '28px "Secular"'
-                    ctx.fillStyle = args[0];
-                    ctx.strokeStyle = args[1];
+                    ctx.fillStyle = mainColor;
+                    ctx.strokeStyle = shadowColor;
                     ctx.lineWidth = 5;
                     if (top != undefined) {
-                        top = top.split("").reverse().join("");
+    			top = top.replace(/[~!@#$%^&*()_|+\-=?;'",.<>\{\}\[\]\\\/]/gi,'');
                         words = top.split(' ')
                         top2 = ''
                         var i = 0
@@ -463,11 +470,11 @@ module.exports = msgHandler = async (client, message) => {
                         top2 += words.join(' ')
                         if (top2 != '' && !top.includes('\n')) { top = top2 }
                         for (i = 0; i < top.split('\n').length; i++) {
-                            command2.videoFilters({ filter: 'drawtext', options: { fontfile:'SecularOne-Regular.ttf', text: top.split('\n')[i], fontsize: 28, fontcolor: args[0], x: 120-(ctx.measureText(top.split('\n')[i]).width / 2), y: (top.split('\n').length * 32 - 20 * (i)-32), shadowcolor: args[1].toLowerCase(), shadowx: 2, shadowy: 2 } })
+                            command2.videoFilters({ filter: 'drawtext', options: { fontfile:'SecularOne-Regular.ttf', text: top.split('\n')[i], fontsize: 28, fontcolor: mainColor, x: 120-(ctx.measureText(top.split('\n')[i]).width / 2), y: (32+20 * (i)-32), shadowcolor: shadowColor, shadowx: 2, shadowy: 2 } })
                         }
                     }
                     if (bottom != undefined) {
-                        bottom = bottom.split("").reverse().join("");
+                        bottom = bottom.replace(/[~!@#$%^&*()_|+\-=?;'",.<>\{\}\[\]\\\/]/gi, "")
                         words = bottom.split(' ')
                         bottom2 = ''
                         var i = 0
@@ -488,7 +495,7 @@ module.exports = msgHandler = async (client, message) => {
                         bottom2 += words.join(' ')
                         if (bottom2 != '' && !bottom.includes('\n')) { bottom = bottom2 }
                         for (i = 0; i < bottom.split('\n').length; i++) {
-                            command2.videoFilters({ filter: 'drawtext', options: { fontfile:'SecularOne-Regular.ttf', text: bottom.split('\n')[i], fontsize: 28, fontcolor: args[0], x: 120-(ctx.measureText(bottom.split('\n')[i]).width / 2), y: (200 - 20 * (i)), shadowcolor: args[1].toLowerCase(), shadowx: 2, shadowy: 2 } })
+                            command2.videoFilters({ filter: 'drawtext', options: { fontfile:'SecularOne-Regular.ttf', text: bottom.split('\n')[i], fontsize: 28, fontcolor: mainColor, x: 120-(ctx.measureText(bottom.split('\n')[i]).width / 2), y: (228 - 20 * (bottom.split('\n').length - i)), shadowcolor: shadowColor, shadowx: 2, shadowy: 2 } })
 
                         }
                     }
@@ -511,7 +518,7 @@ module.exports = msgHandler = async (client, message) => {
                 }).run()
             }
             else {
-                await client.reply(from, 'Wrong Format. valid input: reply to image or send image with: #' + command + ' [color] [shadow] expand[if you want to expand] top text|bottom text.', id)
+                client.reply(from, 'Wrong Format. valid input: reply to image or send image with: #' + command + ' [color] [shadow] expand[if you want to expand] top text|bottom text.', id)
             }
                 break
             }
@@ -523,7 +530,7 @@ module.exports = msgHandler = async (client, message) => {
             case 'stiker2': {
                 if (isMedia && (mimetype === 'video/mp4' && message.duration < 30 || mimetype === 'image/gif' && message.duration < 30)) {
                     const mediaData = await decryptMedia(message, uaOverride)
-                    client.reply(from, 'this will take a while to process.', id)
+                    await client.reply(from, 'this will take a while to process.', id)
                     const filename = `./media/input.${mimetype.split('/')[1]}`
                     var height = message.height
                     var width = message.width
@@ -574,7 +581,7 @@ module.exports = msgHandler = async (client, message) => {
                 }
                 else if (!isQuotedImage && (quotedMsg != null) && (quotedMsgObj.mimetype === 'video/mp4' && quotedMsgObj.duration < 30 || quotedMsgObj.mimetype === 'image/gif' && quotedMsgObj.duration < 30)) {
                     const mediaData = await decryptMedia(quotedMsg, uaOverride)
-                    client.reply(from, 'this will take a while to process.', id)
+                    await client.reply(from, 'this will take a while to process.', id)
                     const filename = `./media/input.${quotedMsgObj.mimetype.split('/')[1]}`
                     var height = quotedMsgObj.height
                     var width = quotedMsgObj.width
@@ -623,20 +630,34 @@ module.exports = msgHandler = async (client, message) => {
                         }).run()
                     }
                 }
-                else if ((isMedia || isQuotedImage) && args.length > 2) {
+                else if ((isMedia || isQuotedImage) && args.length>0 && !(args.length ==1 && args[0].toLowerCase()=='expand')) {
                     const encryptMedia = isQuotedImage ? quotedMsg : message
                     const _mimetype = isQuotedImage ? quotedMsg.mimetype : mimetype
                     const mediaData = await decryptMedia(encryptMedia, uaOverride)
                     const imageBase64 = `data:${_mimetype};base64,${mediaData.toString('base64')}`
+			var expandLocation =0;
+			                if (ValidColors.includes(args[0].toLowerCase())){
+						                    var mainColor = args[0].toLowerCase();
+						                    expandLocation++;
+						                }
+			                else{
+						                    var mainColor = 'white';
+						                }
+			                if (ValidColors.includes(args[1].toLowerCase())){
+						                    var shadowColor = args[1].toLowerCase();
+						                    expandLocation++;
+						                }
+			                else{
+						                    var shadowColor = 'red';
+						                }
                     loadImage(mediaData).then((image) => {
-
-                        if (args[2].toLowerCase() == 'expand') {
+                        if (args[expandLocation].toLowerCase() == 'expand') {
                             var canvas = createCanvas(512, 512)
                             var ctx = canvas.getContext('2d')
                             ctx.drawImage(image, 0, 0, image.width, image.height, 0, 0, 512, 512)
-                            var meme = arg.split('expand').slice(1).join(' ')
+                            var meme = args.slice(expandLocation+1).join(' ')
                             if (!meme.includes('|')) { top = meme }
-                            else { var top = meme.split('|')[0]; var bottom = meme.split('|').slice(1).join(' ') }
+                            else { var top = meme.split('|')[0]; var bottom = meme.split('|').slice(1).join('|') }
                         }
                         else {
                             var canvas = createCanvas(512, 512)
@@ -647,14 +668,14 @@ module.exports = msgHandler = async (client, message) => {
                             else {
                                 ctx.drawImage(image, 0, 0, image.width, image.height, 0, 256 - 256 * image.height / image.width, 512, 512 * image.height / image.width)
                             }
-                            var meme = args.slice(2).join(' ')
+                            var meme = args.slice(expandLocation).join(' ')
                             if (!meme.includes('|')) { top = meme }
-                            else { var top = meme.split('|')[0]; var bottom = meme.split('|').slice(1).join(' ') }
+                            else { var top = meme.split('|')[0]; var bottom = meme.split('|').slice(1).join('|') }
 
                         }
                         ctx.font = '64px "Secular"'
-                        ctx.fillStyle = args[0];
-                        ctx.strokeStyle = args[1];
+                        ctx.fillStyle = mainColor;
+                        ctx.strokeStyle = shadowColor;
                         ctx.lineWidth = 5;
                         if (top != undefined) {
                             words = top.split(' ')
@@ -711,8 +732,7 @@ module.exports = msgHandler = async (client, message) => {
                         client.sendImageAsSticker(message.chatId, canvas.toDataURL(), {author: undefined, pack: "reply to an image with #s"})
                     })
                 }
-                else if ((isMedia || isQuotedImage) && args.length === 1) {
-                    if (arg != 'expand') { await client.reply(from, 'Wrong Format. valid input: reply to image or send image with: #' + command + ' [color] [outline] expand[if you want to expand] top text|bottom text', id); }
+                else if ((isMedia || isQuotedImage) && args.length === 1 && args[0].toLowerCase() == 'expand') {
                     const encryptMedia = isQuotedImage ? quotedMsg : message
                     const mediaData = await decryptMedia(encryptMedia, uaOverride)
                     loadImage(mediaData).then((image) => {
@@ -739,7 +759,7 @@ module.exports = msgHandler = async (client, message) => {
                     })
                 }
                 else {
-                    await client.reply(from, 'Wrong Format. valid input: reply to image or send image with: #' + command + ' [color] [outline] expand[if you want to expand] top text|bottom text. Or, reply to video or gif with #' + command + ' expand[if you want to expand]', id)
+                    client.reply(from, 'Wrong Format. valid input: reply to image or send image with: #' + command + ' [color] [outline] expand[if you want to expand] top text|bottom text. Or, reply to video or gif with #' + command + ' expand[if you want to expand]', id)
                 }
                 break
             }
@@ -1097,7 +1117,7 @@ module.exports = msgHandler = async (client, message) => {
                         const browser = await puppeteer.launch();
                         const page = await browser.newPage();
                         await page.setContent(data3);
-                        var base64 = await page.screenshot({ encoding: "base64" })
+			var base64 = await page.screenshot({ encoding: "base64",fullPage:true})
                         await browser.close();
                         loadImage('data:image/png;base64,' + base64).then((image) => {
 
@@ -1130,7 +1150,7 @@ module.exports = msgHandler = async (client, message) => {
                         const browser = await puppeteer.launch();
                         const page = await browser.newPage();
                         await page.setContent(data3);
-                        var base64 = await page.screenshot({ encoding: "base64" })
+			var base64 = await page.screenshot({ encoding: "base64",fullPage:true})
                         await browser.close();
                         loadImage('data:image/png;base64,' + base64).then((image) => {
 
@@ -1547,10 +1567,14 @@ module.exports = msgHandler = async (client, message) => {
                 const loadedMsg = await client.getAmountOfLoadedMessages()
                 const chatIds = await client.getAllChatIds()
                 const groups = await client.getAllGroups()
-                client.sendText(from, `Status :\n- *${loadedMsg}* Loaded Messages\n- *${groups.length}* Group Chats\n- *${chatIds.length - groups.length}* Personal Chats\n- *${chatIds.length}* Total Chats`)
+                await client.sendText(from, `Status :\n- *${loadedMsg}* Loaded Messages\n- *${groups.length}* Group Chats\n- *${chatIds.length - groups.length}* Personal Chats\n- *${chatIds.length}* Total Chats`)
                 break
             }
             case 'wolf': {
+		    if(args.length ==0) {
+			                                                                                  await client.reply(message.chatId, "you need to write a math rexpression after the command", message.id);
+			                                                                                  return;
+			                                                                              }
                 try {
                     var fuckyu = await waApi.getSimple({ i: arg, ip: '140.82.121.4' });
                     var createdUser = await client.sendImage(message.chatId, fuckyu);
@@ -1562,13 +1586,18 @@ module.exports = msgHandler = async (client, message) => {
                 break
             }
             case 'mj':
+			if(args.length ==0) {
+				                                              await client.reply(message.chatId, "you need to write a math rexpression after the command", message.id);
+				                                              return;
+				                                          }
+			try{
                 mjAPI.typeset({
                     math: arg,
                     format: "TeX", // or "inline-TeX", "MathML"
                     svg: true,      // or svg:true, or html:true
                 }, async function (data) {
                     if (!data.errors) {
-                        try {
+                        
                             /*
                             const png = await svgToImg.from(data.svg).toPng({ encoding: "base64" });
                             var createdUser = await client.sendImage(message.chatId, "data:image/png;base64," + png);
@@ -1589,11 +1618,14 @@ module.exports = msgHandler = async (client, message) => {
                                 await client.sendImage(message.chatId, `data:image/png;base64,${base64}`)
                                 await browser.close();
                             })()
-                        } catch (error) {
-                            console.error(error)
-                        }
                     }
+			else{
+				 await client.reply(message.chatId, "an error has occurred, check your input.", message.id)
+			}
                 });
+			} catch (error){
+				await client.reply(message.chatId, "an error has occurred, check your input.", message.id)
+				                        }
                 break
             case 'black':
                 if (message.fromMe || isGroupAdmins) {
@@ -1618,7 +1650,7 @@ module.exports = msgHandler = async (client, message) => {
                     }
                 }
                 else {
-                    await client.reply(message.chatId, "not u its for me", message.id);
+                    client.reply(message.chatId, "not u its for me", message.id);
                 }
                 break
             case 'toggle':
@@ -1665,7 +1697,9 @@ module.exports = msgHandler = async (client, message) => {
                         await client.reply(message.chatId, analysis, message.id);
                     }
                 }
-                    
+                else{
+	                                              await client.reply(message.chatId, "צריך להגיב לייצוא צאט", message.id);
+		}
                 break
             /*
         case 'emoji':
@@ -1700,6 +1734,10 @@ module.exports = msgHandler = async (client, message) => {
             */
 
             case 'compile':
+			if(args.length ==0) {
+				                                              await client.reply(message.chatId, "צריך לכתוב משהו אחרי הפקודה", message.id);
+				                                              return;
+				                                          }
                 compilers = {
                     "bash": "bash",
                     "c": "gcc-head-c",
@@ -1721,16 +1759,26 @@ module.exports = msgHandler = async (client, message) => {
                     "typescript": "typescript-3.5.1",
                     "vim-script": "vim-head",
                 }
-                if (!compilers.hasOwnProperty(args[0])) { client.reply(message.chatId, 'please state the language after the command', message.id); }
+                if (!compilers.hasOwnProperty(args[0]) && !compilers.hasOwnProperty(arg.split('\n')[0].replace(' ',''))) { await client.reply(message.chatId, 'please state the language after the command', message.id); }
                 else {
-                    var compiler = compilers[args[0]]
+		    if (compilers.hasOwnProperty(args[0])){
+                          var compiler = compilers[args[0]]
+			    var code = args.slice(1).join(' ')
+		    }
+			else if (compilers.hasOwnProperty(arg.split('\n')[0].replace(' ',''))){
+				var compiler = compilers[arg.split('\n')[0].replace(' ','')]
+				var code = arg.slice(arg.split('\n')[0].replace(' ','').length+1)
+			}
+			if (compiler == 'openjdk-head'){
+				code = 'public class prog {\n' + code + '}'
+			}
                     const options = {
                         method: 'POST',
                         url: 'https://wandbox.org/api/compile.json',
                         json: true,
                         body: {
                             "compiler": compiler,
-                            "code": args.slice(1).join(' ')
+                            "code": code
                         },
                         timeout: 5000,
 
@@ -1738,11 +1786,12 @@ module.exports = msgHandler = async (client, message) => {
                     };
                     request(options, function optionalCallback(err, httpResponse, body) {
                         if (err) {
-                            return console.error('upload failed:', err);
+                            return client.reply(message.chatId, "something failed. error code: " + err.code, message.id);;
                         }
                         if (body.program_error){client.reply(message.chatId, "error: \n" + body.program_error, message.id);}
-                        else if (!body.program_output){client.reply(message.chatId, "no output no error bro", message.id);}
-                        else if (body.program_output.includes('@someone')) {client.reply(message.chatId, "no tricks my dude" , message.id);}
+			    else if (body.compiler_error){client.reply(message.chatId, "error: \n" + body.compiler_error, message.id);}
+			    else if (!body.program_output){client.reply(message.chatId, "no output no error bro", message.id);}
+                        else if (body.program_output.includes('@someone') || body.program_output.length > 1000 || (body.program_output.split('\n').length - 1)>10) {client.reply(message.chatId, "no tricks my dude" , message.id);}
                         else{client.reply(message.chatId, "output: \n" + body.program_output, message.id);}
                         
                     })
@@ -1776,6 +1825,10 @@ module.exports = msgHandler = async (client, message) => {
             case 'urban':
             case 'urbandictionary':
                   // Promise
+		  if(args.length ==0) {
+			                      await client.reply(message.chatId, "צריך לכתוב משהו אחרי הפקודה", message.id);
+			                      return;
+			                  }
                   ud.define(arg).then((results) => {      
                       var mess = ''            
                     Object.entries(results[0]).forEach(([key, prop]) => {
@@ -1800,6 +1853,10 @@ module.exports = msgHandler = async (client, message) => {
                   case 'udrand':
                     case 'urbanrand':
                     case 'urbandictionaryrand':
+			if(args.length ==0) {
+				                                              await client.reply(message.chatId, "צריך לכתוב משהו אחרי הפקודה", message.id);
+				                                              return;
+				                                          }
                           // Promise
                           ud.random().then((results) => {      
                               var mess = ''            
@@ -1952,7 +2009,7 @@ module.exports = msgHandler = async (client, message) => {
                                   break
             case 'covid':
                 if(arg == "#covid " || arg == "#covid") {
-                    client.reply(message.chatId, "צריך לכתוב משהו אחרי הפקודה", message.id);
+                    await client.reply(message.chatId, "צריך לכתוב עיר אחרי הפקודה", message.id);
                     return;
                 }
     
@@ -1972,13 +2029,11 @@ module.exports = msgHandler = async (client, message) => {
                 let rawData = await fetch(coronaEndpoint, requestOptions);
                 let data = await rawData.json();
     
-                console.log(data);
-    
     
                 let found = data[0].data.filter(city => city.name.includes(arg))
     
                 if(found.length == 0) {
-                    client.reply(message.chatId, "שמעו שאני לא מכיר עיר בשם הזה", message.id);
+                    await client.reply(message.chatId, "שמעו שאני לא מכיר עיר בשם הזה", message.id);
                     return;
                 }
     
@@ -2016,16 +2071,20 @@ module.exports = msgHandler = async (client, message) => {
                     response += newline;
                     response += italic("מעודכן לתאריך " + date.toDateString());
     
-                    client.reply(message.chatId, response, message.id);
+                    await client.reply(message.chatId, response, message.id);
                 } else {
     
-                    client.reply(message.chatId, "יש את זה בפחות ספציפי?", message.id);
+                    await client.reply(message.chatId, "יש את זה בפחות ספציפי?", message.id);
                 }
             break
             case 'split':
+			if(args.length ==0) {
+				                                              await client.reply(message.chatId, "צריך לכתוב משהו אחרי הפקודה", message.id);
+				                                              return;
+				                                          }
                 var num = parseInt(arg)
                 if (num>3 || num<1){
-                    await client.reply(message.chatId, "max is 3, min is 1 bro", message.id);
+                    await await client.reply(message.chatId, "max is 3, min is 1 bro", message.id);
                 }
                 else if (num && (isMedia || isQuotedImage) && args.length === 2) {
                     if (args[1] != 'expand') { await client.reply(from, 'Wrong Format. valid input: reply to image or send image with: #' + command + ' [color] [outline] expand[if you want to expand] top text|bottom text', id); }
@@ -2075,6 +2134,10 @@ module.exports = msgHandler = async (client, message) => {
                 }
                 break
                 case 'splithe':
+		if(args.length ==0) {
+			                                              await client.reply(message.chatId, "צריך לכתוב משהו אחרי הפקודה", message.id);
+			                                              return;
+			                                          }
                     var num = parseInt(arg)
                     if (num>3 || num<1){
                         await client.reply(message.chatId, "max is 3, min is 1 bro", message.id);
@@ -2127,10 +2190,11 @@ module.exports = msgHandler = async (client, message) => {
                     }
                     break
             default:
-                console.log(color('[ERROR]', 'red'), color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'yellow'), 'Unregistered Command from', color(pushname))
+		console.log(color('[ERROR]', 'red'), color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'yellow'), 'Unregistered Command from', color(pushname))
                 break
         }
     } catch (err) {
         console.error(color(err, 'red'))
+	await client.reply(message.chatId, 'some error has occured. if you are unsure how to use a command, send #help [command name].', id);
     }
 }

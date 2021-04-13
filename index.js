@@ -15,7 +15,7 @@ const start = (client = new Client()) => {
     })
 
     // listening on message
-    client.onAnyMessage((message) => {
+    client.onMessage((message) => {
         // Cut message Cache if cache more than 3K
         client.getAmountOfLoadedMessages().then((msg) => (msg >= 3000) && client.cutMsgCache())
         // Message Handler
@@ -57,6 +57,7 @@ const options = {
     blockCrashLogs: true,
     deleteSessionDataOnLogout: true,
     useChrome: true,
+	cacheEnabled:false,
     killProcessOnBrowserClose: true,
     throwErrorOnTosBlock: false,
     viewport: { height: 1000, width: 1920 },
