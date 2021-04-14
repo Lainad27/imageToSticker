@@ -23,8 +23,8 @@ const start = (client = new Client()) => {
     })
 
     // listen group invitation
+   client.onAddedToGroup(({ groupMetadata: { id }, contact: { name } }) =>
     /*
-    client.onAddedToGroup(({ groupMetadata: { id }, contact: { name } }) =>
         client.getGroupMembersId(id)
             .then((ids) => {
                 console.log('[CLIENT]', color(`Invited to Group. [ ${name} => ${ids.length}]`, 'yellow'))
@@ -34,8 +34,37 @@ const start = (client = new Client()) => {
                 } else {
                     client.sendText(id, `Hello group members *${name}*, thank you for inviting this bot, to see the bot menu send *#menu*`)
                 }
-            }))
-*/
+                
+            })*/
+            client.sendText(id, `היי, זה הבוט לאינד לוואצאפ.
+            פקודות:
+            • #מהירות בדקו את מהירות הבוט⏱️
+            • #עזרה  פקודה זוℹ️
+            • #סטטוס לקבלת סטטוס הבוט❓
+            • הגיבו לתמונה #ס כדי להכין סטיקר שלה 📷
+            • הגיבו לגיף/וידאו #מ כדי להכין סטיקר שלו🎞️
+            • הגיבו להודעת טקסט #סמ כדי להכין סטיקר שלה📜
+            • הגיבו לטקסט #סק [שם] כדי להכין סטיקר של ההודעה מהשם שכתבתם📲
+            • #קורונה [שם עיר] לסטטוס הקורונה שם🦠 (דוגמא: #קורונה תל אביב)
+            פקודות באנגלית:
+            
+            • #שועל [ביטוי מתמטי] לwolfram alpha (דוגמא: #שועל x²+3x-7=0) 🧮
+            • #מט [ביטוי מתמטי] להרצת mathjax (#מט \\sum n = \\frac{n*(n+1)}{2}) 📊
+            • #קמפל [שפה] [קוד]- שפה וקוד באנגלית (#קמפל python print('hey')) 🖥️
+            
+            
+            • #עזרה [שם פקודה] לעוד מידע עליה (דוגמא: #עזרה סק)`))
+
+    // listen paricipant event on group (wellcome message)
+    client.onGlobalParicipantsChanged(async (event) => {
+        // const host = await client.getHostNumber() + '@c.us'
+        // if (event.action === 'add' && event.who !== host) client.sendTextWithMentions(event.chat, `Hello, Welcome to the group @${event.who.replace('@c.us', '')} \n\nHave fun with us✨`)
+    })
+
+    client.onIncomingCall((callData) => {
+        // client.contactBlock(callData.peerJid)
+    })
+}
     // listen paricipant event on group (wellcome message)
     client.onGlobalParicipantsChanged(async (event) => {
         // const host = await client.getHostNumber() + '@c.us'
