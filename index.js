@@ -64,7 +64,6 @@ const start = (client = new Client()) => {
     client.onIncomingCall((callData) => {
         // client.contactBlock(callData.peerJid)
     })
-}
     // listen paricipant event on group (wellcome message)
     client.onGlobalParicipantsChanged(async (event) => {
         // const host = await client.getHostNumber() + '@c.us'
@@ -74,6 +73,7 @@ const start = (client = new Client()) => {
     client.onIncomingCall((callData) => {
         // client.contactBlock(callData.peerJid)
     })
+}
 
 const options = {
     sessionId: 'Imperial',
