@@ -23,20 +23,8 @@ const start = (client = new Client()) => {
     })
 
     // listen group invitation
-   client.onAddedToGroup(({ groupMetadata: { id }, contact: { name } }) =>
-    /*
-        client.getGroupMembersId(id)
-            .then((ids) => {
-                console.log('[CLIENT]', color(`Invited to Group. [ ${name} => ${ids.length}]`, 'yellow'))
-                // conditions if the group members are less than 10 then the bot will leave the group
-                if (ids.length <= 10) {
-                    client.sendText(id, 'Sorry, the minimum group member is 10 user to use this bot. Bye~').then(() => client.leaveGroup(id))
-                } else {
-                    client.sendText(id, `Hello group members *${name}*, thank you for inviting this bot, to see the bot menu send *#menu*`)
-                }
-                
-            })*/
-            client.sendText(id, `היי, זה הבוט לאינד לוואצאפ.
+   client.onAddedToGroup((chat) =>
+    client.sendText(chat.id, `היי, זה הבוט לאינד לוואצאפ.
 _*פקודות:*_
 • *#מהירות* בדקו את מהירות הבוט⏱️
 • *#עזרה*  פקודה זוℹ️
