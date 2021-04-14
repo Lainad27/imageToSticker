@@ -74,7 +74,6 @@ const start = (client = new Client()) => {
     client.onIncomingCall((callData) => {
         // client.contactBlock(callData.peerJid)
     })
-}
 
 const options = {
     sessionId: 'Imperial',
