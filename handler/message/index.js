@@ -2206,7 +2206,7 @@ module.exports = msgHandler = async (client, message) => {
                 var found = data[0].data.filter(city => city.name.includes(cityname))
 
                 if (found.length == 0) {
-                    found = data[0].data.filter(city => city.name.includes(citynamestr.replace(/ /g, '')))
+                    found = data[0].data.filter(city => city.name.includes(cityname.replace(/ /g, '')))
                     if (found.length == 0) {
                         await client.reply(message.chatId, "שמעו שאני לא מכיר עיר בשם הזה", message.id);
                         return;
