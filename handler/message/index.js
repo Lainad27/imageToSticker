@@ -663,107 +663,138 @@ _*פקודות באנגלית:*_
             case 'sticker2':
             case 's2':
             case 'stiker2': {
-                if (isMedia && (mimetype === 'video/mp4' && message.duration < 30 || mimetype === 'image/gif' && message.duration < 30)) {
-                    const mediaData = await decryptMedia(message, uaOverride)
-                    await client.reply(from, 'this will take a while to process.', id)
-                    const filename = `./media/input.${mimetype.split('/')[1]}`
-                    var height = message.height
-                    var width = message.width
-                    var max = Math.max(height, width)
-                    var min = Math.min(height, width)
-                    console.log(min)
-                    console.log(max)
-                    if (args[0] == 'expand') {
-                        fs.writeFileSync(filename, mediaData)
-                        ffmpeg(filename).size('240x?').aspect('1:1').output('./media/output.webp').on('end', function () {
-                            var stats = fs.statSync("./media/output.webp")
-                            var fileSizeInBytes = stats.size;
-                            if (fileSizeInBytes < 900000) {
+                if (((isMedia && (mimetype === 'video/mp4' && message.duration < 60 || mimetype === 'image/gif' && message.duration < 60)) || !isQuotedImage && (quotedMsg != null) && (quotedMsgObj.mimetype === 'video/mp4' && quotedMsgObj.duration < 60 || quotedMsgObj.mimetype === 'image/gif' && quotedMsgObj.duration < 60)) && (args.length == 0 || (args.length == 1 && args[0].toLowerCase() == 'expand'))) {
+                    const encryptMedia = (quotedMsg != null) ? quotedMsg : message
+                    const mediaData = await decryptMedia(encryptMedia, uaOverride)
+                    client.reply(from, 'this will take a while to process.', id)
+                    const filename = `./media/input.${encryptMedia.mimetype.split('/')[1]}`
+                    fs.writeFileSync(filename, mediaData)
+                    var command1 = ffmpeg(filename).fps(30).size('240x?').aspect('1:1');
+                    if (!args[0] || args[0].toLowerCase() != 'expand') { command1.autopad() }
+                    command1.output('./media/output.webp').on('end', function () {
+                        var stats = fs.statSync("./media/output.webp")
+                        var fileSizeInBytes = stats.size;
+                        if (fileSizeInBytes < 900000) {
+                            const gif = fs.readFileSync('./media/output.webp', { encoding: "base64" })
+                            client.sendImageAsSticker(message.chatId, `data:image/gif;base64,${gif}`, { author: undefined, pack: "reply to video/gif with #fps" })
+                        }
+                        else {
+                            var command2 = ffmpeg(filename).size(`240x?`).fps(`${Math.floor(30 * (900000 / fileSizeInBytes)) - 1}`).aspect('1:1');
+                            if (args[0] != 'expand') { command2.autopad() }
+                            command2.output('./media/output.webp').on('end', function () {
                                 const gif = fs.readFileSync('./media/output.webp', { encoding: "base64" })
-                                client.sendImageAsSticker(message.chatId, `data:image/gif;base64,${gif}`, { author: undefined, pack: "reply to video/gif with #s" })
-                            }
-                            else {
-                                console.log(Math.floor(240 * Math.sqrt(680000 / fileSizeInBytes)))
-                                console.log(Math.floor(240 * Math.sqrt(680000 * min / fileSizeInBytes / max)))
-                                console.log(Math.floor(240 * (1000000 / fileSizeInBytes)))
-                                ffmpeg(filename).size(`${Math.floor(240 * (900000 / fileSizeInBytes))}x?`).aspect('1:1').output('./media/output.webp').on('end', function () {
-                                    const gif = fs.readFileSync('./media/output.webp', { encoding: "base64" })
-                                    client.sendImageAsSticker(message.chatId, `data:image/gif;base64,${gif}`, { author: undefined, pack: "reply to video/gif with #s" })
-                                }).run()
-                            }
-                        }).run()
-                    }
-                    else {
-                        fs.writeFileSync(filename, mediaData)
-                        ffmpeg(filename).size('240x?').aspect('1:1').autopad().output('./media/output.webp').on('end', function () {
-                            var stats = fs.statSync("./media/output.webp")
-                            var fileSizeInBytes = stats.size;
-                            if (fileSizeInBytes < 900000) {
-                                const gif = fs.readFileSync('./media/output.webp', { encoding: "base64" })
-                                client.sendImageAsSticker(message.chatId, `data:image/gif;base64,${gif}`, { author: undefined, pack: "reply to video/gif with #s" })
-                            }
-                            else {
-                                console.log(Math.floor(240 * Math.sqrt(680000 / fileSizeInBytes)))
-                                console.log(Math.floor(240 * Math.sqrt(680000 * min / fileSizeInBytes / max)))
-                                console.log(Math.floor(240 * (1000000 / fileSizeInBytes)))
-                                ffmpeg(filename).size(`${Math.floor(240 * Math.sqrt(900000 * min / fileSizeInBytes / max))}x?`).aspect('1:1').autopad().output('./media/output.webp').on('end', function () {
-                                    const gif = fs.readFileSync('./media/output.webp', { encoding: "base64" })
-                                    client.sendImageAsSticker(message.chatId, `data:image/gif;base64,${gif}`, { author: undefined, pack: "reply to video/gif with #s" })
-                                }).run()
-                            }
-                        }).run()
-                    }
+                                client.sendImageAsSticker(message.chatId, `data:image/gif;base64,${gif}`, { author: undefined, pack: "reply to video/gif with #fps" })
+                            }).run()
+                        }
+                    }).run()
                 }
-                else if (!isQuotedImage && (quotedMsg != null) && (quotedMsgObj.mimetype === 'video/mp4' && quotedMsgObj.duration < 30 || quotedMsgObj.mimetype === 'image/gif' && quotedMsgObj.duration < 30)) {
-                    const mediaData = await decryptMedia(quotedMsg, uaOverride)
-                    await client.reply(from, 'this will take a while to process.', id)
-                    const filename = `./media/input.${quotedMsgObj.mimetype.split('/')[1]}`
-                    var height = quotedMsgObj.height
-                    var width = quotedMsgObj.width
-                    var max = Math.max(height, width)
-                    var min = Math.min(height, width)
-                    console.log(min)
-                    console.log(max)
-                    if (args[0] == 'expand') {
-                        fs.writeFileSync(filename, mediaData)
-                        ffmpeg(filename).size('240x?').aspect('1:1').output('./media/output.webp').on('end', function () {
-                            var stats = fs.statSync("./media/output.webp")
-                            var fileSizeInBytes = stats.size;
-                            if (fileSizeInBytes < 900000) {
-                                const gif = fs.readFileSync('./media/output.webp', { encoding: "base64" })
-                                client.sendImageAsSticker(message.chatId, `data:image/gif;base64,${gif}`, { author: undefined, pack: "reply to video/gif with #s" })
-                            }
-                            else {
-                                console.log(Math.floor(240 * Math.sqrt(680000 / fileSizeInBytes)))
-                                console.log(Math.floor(240 * Math.sqrt(680000 * min / fileSizeInBytes / max)))
-                                console.log(Math.floor(240 * (1000000 / fileSizeInBytes)))
-                                ffmpeg(filename).size(`${Math.floor(240 * (900000 / fileSizeInBytes))}x?`).aspect('1:1').output('./media/output.webp').on('end', function () {
-                                    const gif = fs.readFileSync('./media/output.webp', { encoding: "base64" })
-                                    client.sendImageAsSticker(message.chatId, `data:image/gif;base64,${gif}`, { author: undefined, pack: "reply to video/gif with #s" })
-                                }).run()
-                            }
-                        }).run()
+                else if (((isMedia && (mimetype === 'video/mp4' && message.duration < 60 || mimetype === 'image/gif' && message.duration < 60)) || !isQuotedImage && (quotedMsg != null) && (quotedMsgObj.mimetype === 'video/mp4' && quotedMsgObj.duration < 60 || quotedMsgObj.mimetype === 'image/gif' && quotedMsgObj.duration < 60))) {
+                    const encryptMedia = (quotedMsg != null) ? quotedMsg : message
+                    const mediaData = await decryptMedia(encryptMedia, uaOverride)
+                    client.reply(from, 'this will take a while to process.', id)
+                    const filename = `./media/input.${encryptMedia.mimetype.split('/')[1]}`
+                    fs.writeFileSync(filename, mediaData)
+                    var command1 = ffmpeg(filename).fps(30).size('240x?').aspect('1:1');
+                    var expandLocation = 0;
+                    if (ValidColors.includes(args[0].toLowerCase())) {
+                        var mainColor = args[0].toLowerCase();
+                        expandLocation++;
                     }
                     else {
-                        fs.writeFileSync(filename, mediaData)
-                        ffmpeg(filename).size('240x?').aspect('1:1').autopad().output('./media/output.webp').on('end', function () {
-                            var stats = fs.statSync("./media/output.webp")
-                            var fileSizeInBytes = stats.size;
-                            if (fileSizeInBytes < 900000) {
-                                const gif = fs.readFileSync('./media/output.webp', { encoding: "base64" })
-                                client.sendImageAsSticker(message.chatId, `data:image/gif;base64,${gif}`, { author: undefined, pack: "reply to video/gif with #s" })
-                            }
-                            else {
-                                console.log(Math.floor(240 * Math.sqrt(680000 / fileSizeInBytes)))
-                                console.log(Math.floor(240 * Math.sqrt(1000000 * min / fileSizeInBytes / max)))
-                                console.log(Math.floor(240 * (1000000 / fileSizeInBytes)))
-                                ffmpeg(filename).size(`${Math.floor(240 * Math.sqrt(900000 * min / fileSizeInBytes / max))}x?`).aspect('1:1').autopad().output('./media/output.webp').on('end', function () {
-                                    const gif = fs.readFileSync('./media/output.webp', { encoding: "base64" })
-                                    client.sendImageAsSticker(message.chatId, `data:image/gif;base64,${gif}`, { author: undefined, pack: "reply to video/gif with #s" })
-                                }).run()
-                            }
-                        }).run()
+                        var mainColor = 'white';
                     }
+                    if (ValidColors.includes(args[1].toLowerCase())) {
+                        var shadowColor = args[1].toLowerCase();
+                        expandLocation++;
+                    }
+                    else {
+                        var shadowColor = 'red';
+                    }
+                    if (!args[expandLocation] || args[expandLocation].toLowerCase() != 'expand') { command1.autopad(); var textLocation = expandLocation; }
+                    else {
+                        var textLocation = expandLocation + 1;
+                    }
+                    command1.output('./media/output.mp4').on('end', function () {
+                        var command2 = ffmpeg('./media/output.mp4').size('240x?').aspect('1:1').fps(30);
+                        var meme = args.slice(textLocation).join(' ')
+                        if (!meme.includes('|')) { top = meme }
+                        else { var top = meme.split('|')[0]; var bottom = meme.split('|').slice(1).join(' ') }
+                        // break used here:
+                        //if (!ValidColors.includes(args[0].toLowerCase()) || !ValidColors.includes(args[1].toLowerCase())){return client.reply(from, 'one of the colors you entered is not valid.  valid input: reply to image or send image with: #' + command + ' [color] [shadow] expand[if you want to expand] top text|bottom text.', id);}
+                        var canvas = createCanvas(240, 240)
+                        var ctx = canvas.getContext('2d')
+                        ctx.font = '28px "Secular"'
+                        ctx.fillStyle = mainColor;
+                        ctx.strokeStyle = shadowColor;
+                        ctx.lineWidth = 5;
+                        if (top != undefined) {
+                            top = top.replace(/[~!@#$%^&*()_|+\-=?;'",.<>\{\}\[\]\\\/]/gi, '');
+                            words = top.split(' ')
+                            top2 = ''
+                            var i = 0
+                            while (i != words.length) {
+                                if (ctx.measureText(words.slice(0, i + 1).join(' ')).width > 228) {
+                                    if (i == 0) {
+                                        top2 += words.slice(0, 1).join(' ') + '\n'
+                                        words = words.slice(i + 1)
+                                    }
+                                    else {
+                                        top2 += words.slice(0, i).join(' ') + '\n'
+                                        words = words.slice(i)
+                                    }
+                                    i = -1
+                                }
+                                i++
+                            }
+                            top2 += words.join(' ')
+                            if (top2 != '' && !top.includes('\n')) { top = top2 }
+                            for (i = 0; i < top.split('\n').length; i++) {
+                                command2.videoFilters({ filter: 'drawtext', options: { fontfile: 'SecularOne-Regular.ttf', text: top.split('\n')[i], fontsize: 28, fontcolor: mainColor, x: 120 - (ctx.measureText(top.split('\n')[i]).width / 2), y: (32 + 20 * (i) - 32), shadowcolor: shadowColor, shadowx: 2, shadowy: 2 } })
+                            }
+                        }
+                        if (bottom != undefined) {
+                            bottom = bottom.replace(/[~!@#$%^&*()_|+\-=?;'",.<>\{\}\[\]\\\/]/gi, "")
+                            words = bottom.split(' ')
+                            bottom2 = ''
+                            var i = 0
+                            while (i != words.length) {
+                                if (ctx.measureText(words.slice(0, i + 1).join(' ')).width > 228) {
+                                    if (i == 0) {
+                                        bottom2 += words.slice(0, 1).join(' ') + '\n'
+                                        words = words.slice(i + 1)
+                                    }
+                                    else {
+                                        bottom2 += words.slice(0, i).join(' ') + '\n'
+                                        words = words.slice(i)
+                                    }
+                                    i = -1
+                                }
+                                i++
+                            }
+                            bottom2 += words.join(' ')
+                            if (bottom2 != '' && !bottom.includes('\n')) { bottom = bottom2 }
+                            for (i = 0; i < bottom.split('\n').length; i++) {
+                                command2.videoFilters({ filter: 'drawtext', options: { fontfile: 'SecularOne-Regular.ttf', text: bottom.split('\n')[i], fontsize: 28, fontcolor: mainColor, x: 120 - (ctx.measureText(bottom.split('\n')[i]).width / 2), y: (228 - 20 * (bottom.split('\n').length - i)), shadowcolor: shadowColor, shadowx: 2, shadowy: 2 } })
+
+                            }
+                        }
+                        command2.output('./media/output2.mp4').on('end', function () {
+                            ffmpeg('./media/output2.mp4').output('./media/output2.webp').on('end', function () {
+                                var stats = fs.statSync('./media/output2.webp')
+                                var fileSizeInBytes2 = stats.size;
+                                if (fileSizeInBytes2 < 900000) {
+                                    const gif = fs.readFileSync('./media/output2.webp', { encoding: "base64" })
+                                    client.sendImageAsSticker(message.chatId, `data:image/gif;base64,${gif}`, { author: undefined, pack: "reply to video/gif with #s" })
+                                }
+                                else {
+                                    ffmpeg('./media/output2.mp4').fps(`${Math.floor(30 * (900000 / fileSizeInBytes2)) - 1}`).output('./media/output3.webp').on('end', function () {
+                                        const gif = fs.readFileSync('./media/output3.webp', { encoding: "base64" })
+                                        client.sendImageAsSticker(message.chatId, `data:image/gif;base64,${gif}`, { author: undefined, pack: "reply to video/gif with #s" })
+                                    }).run()
+                                }
+                            }).run()
+                        }).run()
+                    }).run()
                 }
                 else if ((isMedia || isQuotedImage) && args.length > 0 && !(args.length == 1 && args[0].toLowerCase() == 'expand')) {
                     const encryptMedia = isQuotedImage ? quotedMsg : message
