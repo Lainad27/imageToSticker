@@ -1737,7 +1737,7 @@ _*פקודות באנגלית:*_
                 }
                 break
             }
-            case `מת`:
+            case `מט`:
             case `מתמטיג'קס`:
             case 'mathjax':
             case 'mj':
