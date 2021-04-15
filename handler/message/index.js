@@ -219,16 +219,16 @@ module.exports = msgHandler = async (client, message) => {
 
         if (isMedia) { pres_bud = caption }
         // [BETA] Avoid Spam Message
-        if (isCmd && msgFilter.isFiltered(message.author) && !isGroupMsg) { return console.log(color('[SPAM]', 'red'), color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'yellow'), color(`${command} [${args.length}]`), 'from', color(pushname)) }
+        // if (isCmd && msgFilter.isFiltered(message.author) && !isGroupMsg) { return console.log(color('[SPAM]', 'red'), color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'yellow'), color(`${command} [${args.length}]`), 'from', color(pushname)) }
         //if (isCmd && !isGroupMsg && !message.chat.contact.isMyContact) { return console.log(color('[WHY]', 'orange'), color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'yellow'), color(`${command} [${args.length}]`), 'from', color(pushname)) }
         //if (isCmd && isGroupMsg && (message.chat.groupMetadata.creation>1600000000)) {  return console.log(color('[WHY]', 'orange'), color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'yellow'), color(`${command} [${args.length}]`), 'from', color(pushname)) }
-        if (isCmd && msgFilter.isFiltered(message.author) && isGroupMsg && command != 'help') { return console.log(color('[SPAM]', 'red'), color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'yellow'), color(`${command} [${args.length}]`), 'from', color(pushname), 'in', color(name || formattedTitle)) }
+        // if (isCmd && msgFilter.isFiltered(message.author) && isGroupMsg && command != 'help') { return console.log(color('[SPAM]', 'red'), color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'yellow'), color(`${command} [${args.length}]`), 'from', color(pushname), 'in', color(name || formattedTitle)) }
         if (!isCmd && !isGroupMsg) { return; }
         if (!isCmd && isGroupMsg) { return; }
         //if (isCmd && !isGroupMsg) { return;}
         //if (isCmd && isGroupMsg) { console.log(color('[EXEC]'), color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'yellow'), color(`${command} [${args.length}]`), 'from', color(pushname), 'in', color(name || formattedTitle)) }
         // [BETA] Avoid Spam Message
-        msgFilter.addFilter(message.author)
+        // msgFilter.addFilter(message.author)
 
         switch (command) {
             // Menu and TnC
